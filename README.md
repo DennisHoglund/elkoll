@@ -9,7 +9,7 @@ Dagens uppdrag för hantverkarteamet. Diktera uppdraget, låt AI fylla i fälten
 ## Kom igång (en gång)
 1. **Databas:** Supabase → SQL Editor → New query → klistra in `supabase/schema.sql` → Run.
 2. **Tolkning:** Supabase → Edge Functions → skapa funktionen `elkoll-tolka` med koden i `supabase/functions/elkoll-tolka/index.ts`.
-   Lägg hemligheten `GEMINI_API_KEY` under Edge Functions → Secrets (nyckel från aistudio.google.com).
+   Lägg hemligheten `GEMINI_API_KEY` under Edge Functions → Secrets (nyckel från aistudio.google.com). Valfritt: `GEMINI_MODEL` för att byta modell utan att ändra koden (standard `gemini-3.8-flash`).
 3. **GitHub Pages:** Settings → Pages → Source: **GitHub Actions**.
 4. Öppna appen i Safari → Dela → Lägg till på hemskärmen.
 

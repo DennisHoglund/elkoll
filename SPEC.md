@@ -8,7 +8,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 ## 2. Stack
 - PWA för iPhone (och Android), ren HTML/CSS/JS utan byggsteg. Moduler som IIFE på `window`.
 - Supabase (auth, Postgres, Edge Functions) – **delat projekt** med Jaktvind och Svampkartan. Allt eget har prefixet `elkoll_`.
-- Tolkning: Supabase Edge Function `elkoll-tolka` som anropar Google Gemini (`GEMINI_API_KEY` som hemlighet, modell via `GEMINI_MODEL`, standard `gemini-2.5-flash`).
+- Tolkning: Supabase Edge Function `elkoll-tolka` som anropar Google Gemini (`GEMINI_API_KEY` som hemlighet, modell via `GEMINI_MODEL`, standard `gemini-3.8-flash` – 2.5 är stängd för nya projekt sedan sept 2026).
 - GitHub Pages via Actions. Playwright-tester med egen rapport.
 
 ## 3. Design

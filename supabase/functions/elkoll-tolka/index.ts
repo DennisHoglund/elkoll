@@ -11,7 +11,7 @@ const CORS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS'
 };
 
-const MODELL = Deno.env.get('GEMINI_MODEL') || 'gemini-2.5-flash';
+const MODELL = Deno.env.get('GEMINI_MODEL') || 'gemini-3.8-flash';
 
 const SCHEMA = {
   type: 'object',

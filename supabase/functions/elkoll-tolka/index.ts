@@ -12,6 +12,7 @@ const CORS = {
 };
 
 const MODELL = Deno.env.get('GEMINI_MODEL') || 'gemini-3.8-flash';
+const RESERV = Deno.env.get('GEMINI_RESERV') || 'gemini-3.5-flash-lite';   // används om huvudmodellen inte svarar
 
 const SCHEMA = {
   type: 'object',
@@ -61,7 +62,7 @@ Deno.serve(async (req) => {
     'portkod hör bara hemma i saknas om det låter som en lägenhet/port. ' +
     'uppgift ska vara en kort rubrik (max ca 6 ord) med stor begynnelsebokstav.';
 
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODELL}:generateContent`, {
+  const anropa = (modell: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modell}:generateContent`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': nyckel },
     body: JSON.stringify({
@@ -71,10 +72,29 @@ Deno.serve(async (req) => {
     })
   });
 
-  if (!res.ok) {
-    const fel = await res.text();
-    console.error('Gemini', res.status, fel.slice(0, 500));
-    return svar(502, { error: res.status === 429 ? 'För många tolkningar just nu, vänta en minut.' : 'Tolkningen misslyckades (' + res.status + ')' });
+  // Gemini svarar ibland 503 (överbelastad) eller 500/429. Försök igen med kort paus,
+  // och byt till reservmodellen om huvudmodellen inte svarar.
+  const modeller = [...new Set([MODELL, RESERV])];
+  const pauser = [0, 800, 2000];
+  let res: Response | null = null;
+  let senast = 0;
+  ytter:
+  for (const modell of modeller) {
+    for (const paus of pauser) {
+      if (paus) await new Promise((r) => setTimeout(r, paus));
+      res = await anropa(modell);
+      if (res.ok) break ytter;
+      senast = res.status;
+      console.error('Gemini', modell, res.status, (await res.text()).slice(0, 300));
+      if (res.status === 404 || res.status === 400 || res.status === 403) break;  // försök inte igen med samma modell
+    }
+  }
+
+  if (!res || !res.ok) {
+    const fel = senast === 429 ? 'För många tolkningar just nu, vänta en minut.'
+      : senast === 503 || senast === 500 ? 'Googles tolkning är överbelastad just nu. Försök igen om en stund eller fyll i själv.'
+      : 'Tolkningen misslyckades (' + senast + ')';
+    return svar(502, { error: fel });
   }
 
   try {

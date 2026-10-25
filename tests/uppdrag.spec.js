@@ -86,6 +86,16 @@ test.describe('Nytt uppdrag', () => {
     await expect(page.locator('#screen-idag')).toBeVisible();
     expect(api.db.elkoll_uppdrag).toHaveLength(5);
   });
+
+  test('tolkningen hänger aldrig – tidsgräns ger besked', { annotation: { type: 'testfall', description: 'TC-UPP-14' } }, async ({ idag: page, api }) => {
+    api.tolkFordrojning = 5000;
+    await page.evaluate(() => { window.ELKOLL_CONFIG.tolkaTimeoutMs = 800; });
+    await page.getByRole('link', { name: 'Nytt uppdrag' }).click();
+    await page.getByLabel('Beskriv uppdraget').fill('Imorgon Storgatan 12');
+    await page.getByRole('button', { name: 'Tolka' }).click();
+    await expect(page.locator('#tolka-msg')).toHaveText('Tolkningen tog för lång tid. Försök igen eller fyll i fälten själv.');
+    await expect(page.getByRole('button', { name: 'Tolka' })).toBeEnabled();
+  });
 });
 
 test.describe('Uppdragskort', () => {

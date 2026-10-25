@@ -8,7 +8,7 @@
 | **Prioritet** | Hög |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/uppdrag.spec.js`](../../tests/uppdrag.spec.js#L92) – *visar uppgifter, portkod och knappar för navigera, ring och sms* |
+| **Playwright** | [`tests/uppdrag.spec.js`](../../tests/uppdrag.spec.js#L102) – *visar uppgifter, portkod och knappar för navigera, ring och sms* |
 
 ## Förutsättningar
 

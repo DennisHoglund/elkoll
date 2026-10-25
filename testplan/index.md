@@ -5,8 +5,8 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 
 | | |
 |---|---|
-| **Testfall** | 30 |
-| **Automatiserade** | 26 (körs på iPhone/WebKit och Android/Chromium) |
+| **Testfall** | 31 |
+| **Automatiserade** | 27 (körs på iPhone/WebKit och Android/Chromium) |
 | **Manuella** | 4 (kräver riktig iPhone eller riktig backend) |
 | **Senaste testrapport** | [dennishoglund.github.io/elkoll/rapport/](https://dennishoglund.github.io/elkoll/rapport/) |
 | **Krav** | [SPEC.md](../SPEC.md) |
@@ -53,6 +53,7 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 | [TC-UPP-11](testfall/TC-UPP-11.md) | [Ta bort uppdrag](testfall/TC-UPP-11.md) | Medel | 🤖 |
 | [TC-UPP-12](testfall/TC-UPP-12.md) | [Diktera med tangentbordet](testfall/TC-UPP-12.md) | Hög | 🖐️ |
 | [TC-UPP-13](testfall/TC-UPP-13.md) | [Riktig tolkning med Gemini](testfall/TC-UPP-13.md) | Hög | 🖐️ |
+| [TC-UPP-14](testfall/TC-UPP-14.md) | [Tolkningen hänger aldrig](testfall/TC-UPP-14.md) | Hög | 🤖 |
 
 ## Offline
 

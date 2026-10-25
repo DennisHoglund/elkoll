@@ -209,7 +209,12 @@ window.ElkollUppdrag = (function () {
     let data = null;
     let error = null;
     try {
-      const res = await sb.functions.invoke(window.ELKOLL_CONFIG.tolkaFunktion, { body: { text, idag: U.isoDag() } });
+      // Tidsgräns så att knappen aldrig hänger om Google är segt
+      const grans = window.ELKOLL_CONFIG.tolkaTimeoutMs || 40000;
+      const res = await Promise.race([
+        sb.functions.invoke(window.ELKOLL_CONFIG.tolkaFunktion, { body: { text, idag: U.isoDag() } }),
+        new Promise((resolve) => setTimeout(() => resolve({ data: null, error: Object.assign(new Error('Tolkningen tog för lång tid. Försök igen eller fyll i fälten själv.'), { status: 408 }) }), grans))
+      ]);
       data = res.data;
       error = res.error;
       if (error && error.context && typeof error.context.json === 'function') {

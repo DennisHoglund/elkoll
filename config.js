@@ -4,5 +4,6 @@
 window.ELKOLL_CONFIG = {
   supabaseUrl: 'https://sjdznlmnvubqscftdkoj.supabase.co',
   supabaseAnonKey: 'sb_publishable_bKrpOKc38I20NvhC2vjmhw_YyZbm94Q',
-  tolkaFunktion: 'elkoll-tolka'
+  tolkaFunktion: 'elkoll-tolka',
+  tolkaTimeoutMs: 40000
 };

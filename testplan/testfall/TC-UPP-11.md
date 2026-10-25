@@ -8,7 +8,7 @@
 | **Prioritet** | Medel |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/uppdrag.spec.js`](../../tests/uppdrag.spec.js#L128) – *ta bort ett uppdrag kräver två tryck* |
+| **Playwright** | [`tests/uppdrag.spec.js`](../../tests/uppdrag.spec.js#L138) – *ta bort ett uppdrag kräver två tryck* |
 
 ## Förutsättningar
 

@@ -73,7 +73,7 @@ function filtrera(rows, params) {
 }
 
 async function mocka(page, { data = exempelData(), tolkning = TOLKNING } = {}) {
-  const api = { db: data, tolkning, tolkStatus: 200, tolkAnrop: [], anrop: [], nere: false, signup: null };
+  const api = { db: data, tolkning, tolkStatus: 200, tolkFordrojning: 0, tolkAnrop: [], anrop: [], nere: false, signup: null };
 
   await page.route(/cdn\.jsdelivr\.net/, (route) => {
     if (/supabase-js/.test(route.request().url())) {
@@ -112,6 +112,7 @@ async function mocka(page, { data = exempelData(), tolkning = TOLKNING } = {}) {
     // ---- Tolkning ----
     if (p === '/functions/v1/elkoll-tolka') {
       api.tolkAnrop.push(req.postDataJSON());
+      if (api.tolkFordrojning) await new Promise((r) => setTimeout(r, api.tolkFordrojning));
       if (api.tolkStatus !== 200) return json(route, api.tolkStatus, { error: 'Tolkningen misslyckades (' + api.tolkStatus + ')' });
       return json(route, 200, api.tolkning);
     }

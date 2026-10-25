@@ -29,6 +29,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 - Kort per uppdrag: nummer, tid, uppgift, adress, från/kund, chips för status, mottagare (Alla), saknade uppgifter och "Väntar på täckning".
 ### 4.4 Nytt / ändra uppdrag
 - Stort textfält för diktering med tangentbordets mikrofon. **Tolka** fyller i datum, tid, adress, kund, telefon, portkod, uppgift, material.
+- Tolkningen har tidsgräns (40 s i appen, ca 30 s i funktionen) med nya försök vid 503 och reservmodell – knappen hänger aldrig.
 - Fält som tolkningen inte hittade markeras orange tills de fylls i. Tilldelning med knappar per kollega (eller Ingen).
 - Krav: datum, adress, uppgift. Tolkningen är frivillig – utan nät eller funktion fyller man i själv.
 ### 4.5 Uppdragskort
@@ -49,7 +50,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 
 ## 7. Tester
 - Playwright, iPhone 14 (WebKit) och Pixel 7 (Chromium). Supabase, tolkningsfunktionen, CDN och typsnitt mockas i `tests/mock.js`.
-- Testplan i `testplan/` (30 testfall, 26 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
+- Testplan i `testplan/` (31 testfall, 27 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
 
 ## 8. Beslut
 - Inloggning med lösenord i stället för magisk länk – delat projekt utan egen SMTP.

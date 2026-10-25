@@ -1,0 +1,16 @@
+{
+  "name": "elkoll",
+  "private": true,
+  "description": "Elkoll – PWA för hantverkarteamets uppdrag",
+  "scripts": {
+    "test": "node tests/kontrollera-testplan.js && playwright test",
+    "testplan": "node tests/kontrollera-testplan.js",
+    "test:ui": "playwright test --ui",
+    "rapport": "npx http-server rapport -p 9324 -o"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@supabase/supabase-js": "2.75.0",
+    "http-server": "^14.1.1"
+  }
+}

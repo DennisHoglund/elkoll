@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="sv" data-theme="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Elkoll</title>
+  <meta name="description" content="Dagens uppdrag för hantverkarteamet">
+  <meta name="theme-color" content="#F4F4F2">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Elkoll">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    try {
+      var t = localStorage.getItem('elkoll-theme');
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+
+  <main id="view-loading" class="center">
+    <div class="spinner" aria-label="Laddar"></div>
+  </main>
+
+  <!-- ===================== Inloggning ===================== -->
+  <main id="view-login" class="center" hidden>
+    <section class="card login">
+      <img class="logo" src="icons/icon.svg" alt="" width="72" height="72">
+      <h1>Elkoll</h1>
+      <p class="muted">Dagens uppdrag för teamet.</p>
+
+      <form id="form-login" class="form" novalidate>
+        <label for="email">E-post</label>
+        <input id="email" type="email" inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="namn@foretaget.se" required>
+        <label for="password">Lösenord</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+        <button class="btn primary" type="submit" id="btn-login">Logga in</button>
+        <button class="btn link" type="button" id="btn-toggle-signup">Ny här? Skapa konto</button>
+      </form>
+
+      <p id="login-msg" class="msg" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <!-- ===================== Appen ===================== -->
+  <div id="view-app" hidden>
+
+    <!-- Skapa team (första gången) -->
+    <section id="screen-start" class="screen" hidden>
+      <header class="head">
+        <h1>Välkommen</h1>
+        <p class="muted" id="start-email"></p>
+      </header>
+      <div class="pad stack">
+        <div class="card stack">
+          <h2>Har en kollega redan lagt till dig?</h2>
+          <p class="muted">Be hen lägga till din e-postadress under <strong>Teamet</strong>. Tryck sedan på <strong>Försök igen</strong>.</p>
+          <button class="btn ghost" type="button" id="btn-start-retry">Försök igen</button>
+        </div>
+        <form id="form-team" class="card form" novalidate>
+          <h2>Eller skapa ett nytt team</h2>
+          <label for="team-namn">Företagets namn</label>
+          <input id="team-namn" autocomplete="organization" placeholder="T.ex. Sundsvalls El AB" required>
+          <label for="team-mitt-namn">Ditt namn</label>
+          <input id="team-mitt-namn" autocomplete="name" required>
+          <label for="team-mitt-tel">Ditt mobilnummer</label>
+          <input id="team-mitt-tel" type="tel" autocomplete="tel" inputmode="tel" placeholder="07x-xxx xx xx">
+          <p id="team-msg" class="msg" role="status" aria-live="polite"></p>
+          <button class="btn primary" type="submit">Skapa team</button>
+        </form>
+        <button class="btn ghost" type="button" data-logout>Logga ut</button>
+      </div>
+    </section>
+
+    <!-- Dagens uppdrag -->
+    <section id="screen-idag" class="screen" hidden>
+      <header class="head row-between">
+        <div>
+          <p class="kicker" id="idag-datum"></p>
+          <h1>Uppdrag</h1>
+        </div>
+        <div class="row">
+          <button class="badge" id="queue-badge" type="button" hidden></button>
+          <a class="avatar" id="btn-team" href="#team" aria-label="Teamet och inställningar"></a>
+        </div>
+      </header>
+
+      <div class="pad">
+        <div class="seg" role="group" aria-label="Visa">
+          <button type="button" id="filter-mina" aria-pressed="true">Mina</button>
+          <button type="button" id="filter-alla" aria-pressed="false">Alla</button>
+        </div>
+        <div class="days" id="days" role="group" aria-label="Välj dag"></div>
+      </div>
+
+      <div class="pad list" id="lista" aria-live="polite"></div>
+
+      <div class="bottom">
+        <a class="btn primary big" href="#nytt" id="btn-nytt">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Nytt uppdrag
+        </a>
+      </div>
+    </section>
+
+    <!-- Nytt / ändra uppdrag -->
+    <section id="screen-nytt" class="screen" hidden>
+      <header class="bar">
+        <a class="back" href="#idag" id="nytt-avbryt">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          Avbryt
+        </a>
+        <span class="bar-title" id="nytt-titel">Nytt uppdrag</span>
+        <span class="bar-spacer"></span>
+      </header>
+
+      <form id="form-uppdrag" class="form pad stack" novalidate>
+        <label for="u-fritext">Beskriv uppdraget</label>
+        <textarea id="u-fritext" class="big-text" rows="6" placeholder="T.ex. Imorgon halv åtta Storgatan 12 i Sundsvall, byta elcentral hos Anna, 070-123 45 67. Ta med jordfelsbrytare."></textarea>
+        <p class="hint">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/></svg>
+          Tryck på mikrofonen på tangentbordet och prata fritt: vad, var, när och vem.
+        </p>
+        <button class="btn dark" type="button" id="btn-tolka">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>
+          Tolka
+        </button>
+        <p id="tolka-msg" class="msg" role="status" aria-live="polite"></p>
+
+        <div class="row-between"><h2>Kontrollera</h2><span class="muted small">Ändra det som blev fel</span></div>
+        <div class="card stack">
+          <div class="grid2">
+            <div class="field"><label for="u-datum">Datum</label><input id="u-datum" type="date" required></div>
+            <div class="field"><label for="u-tid">Tid</label><input id="u-tid" type="time"></div>
+          </div>
+          <div class="field"><label for="u-adress">Adress</label><input id="u-adress" autocomplete="off" required></div>
+          <div class="grid2">
+            <div class="field"><label for="u-kund">Kund</label><input id="u-kund" autocomplete="off"></div>
+            <div class="field"><label for="u-telefon">Telefon</label><input id="u-telefon" type="tel" inputmode="tel" autocomplete="off"></div>
+          </div>
+          <div class="field"><label for="u-portkod">Portkod</label><input id="u-portkod" autocomplete="off" inputmode="numeric"></div>
+          <div class="field"><label for="u-uppgift">Uppgift</label><input id="u-uppgift" autocomplete="off" required></div>
+          <div class="field"><label for="u-material">Material (ett per rad)</label><textarea id="u-material" rows="3"></textarea></div>
+        </div>
+
+        <span class="lbl">Till</span>
+        <div class="people" id="u-till" role="group" aria-label="Tilldela"></div>
+
+        <p id="uppdrag-msg" class="msg" role="status" aria-live="polite"></p>
+        <div class="bottom inline">
+          <button class="btn primary big" type="submit" id="btn-spara">Spara uppdrag</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Uppdragskort -->
+    <section id="screen-uppdrag" class="screen" hidden>
+      <header class="bar">
+        <a class="back" href="#idag">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          Uppdrag
+        </a>
+        <span class="status-chip" id="kort-status"></span>
+      </header>
+      <div id="kort" class="pad stack"></div>
+    </section>
+
+    <!-- Teamet -->
+    <section id="screen-team" class="screen" hidden>
+      <header class="bar">
+        <a class="back" href="#idag">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          Uppdrag
+        </a>
+      </header>
+      <header class="head">
+        <h1>Teamet</h1>
+        <p class="muted" id="team-namn-visning"></p>
+      </header>
+      <div class="pad stack">
+        <ul class="card members" id="medlemmar"></ul>
+
+        <form id="form-medlem" class="card form" novalidate>
+          <h2>Lägg till kollega</h2>
+          <label for="m-namn">Namn</label>
+          <input id="m-namn" autocomplete="off" placeholder="T.ex. Sara" required>
+          <label for="m-tel">Mobilnummer</label>
+          <input id="m-tel" type="tel" inputmode="tel" autocomplete="off" placeholder="07x-xxx xx xx">
+          <label for="m-epost">E-post</label>
+          <input id="m-epost" type="email" inputmode="email" autocapitalize="off" spellcheck="false" autocomplete="off" placeholder="sara@foretaget.se" required>
+          <p id="medlem-msg" class="msg" role="status" aria-live="polite"></p>
+          <button class="btn primary" type="submit">Lägg till</button>
+          <p class="muted small">Kollegan skapar sedan ett konto i Elkoll med samma e-post och kommer direkt in i teamet.</p>
+        </form>
+
+        <div class="card stack">
+          <div class="row-between">
+            <span>Utseende</span>
+            <button class="btn ghost small-btn" id="btn-theme" type="button" aria-label="Byt tema"><span id="theme-label">Auto</span></button>
+          </div>
+          <p class="muted small" id="user-email"></p>
+          <button class="btn ghost" type="button" data-logout>Logga ut</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.75.0/dist/umd/supabase.js"></script>
+  <script src="config.js"></script>
+  <script src="util.js"></script>
+  <script src="ko.js"></script>
+  <script src="team.js"></script>
+  <script src="uppdrag.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

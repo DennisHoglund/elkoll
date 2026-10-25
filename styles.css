@@ -1,0 +1,229 @@
+/* Elkoll – färgprofil "Arbetskläder": ljust, hög kontrast, signalorange. Ljust + mörkt läge. */
+:root {
+  --bg: #F4F4F2; --yta: #FFFFFF; --yta2: #E9EAE6; --kant: #E3E4E0; --kant2: #C9CBC5;
+  --text: #17191C; --text2: #3D4148; --muted: #5B6068;
+  --accent: #F76707; --on-accent: #17191C;
+  --mork: #17191C; --on-mork: #FFFFFF;
+  --warn-bg: #FFF0E3; --warn: #8A3A00;
+  --ok: #2F6B1F; --ok-bg: #E4F1DC; --fel: #B3261E;
+  --skugga: 0 2px 10px rgba(0, 0, 0, .10);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] {
+    --bg: #141517; --yta: #1F2124; --yta2: #2A2D31; --kant: #34373C; --kant2: #4A4E54;
+    --text: #F1F1EF; --text2: #D0D2D5; --muted: #A3A7AE;
+    --accent: #FF7A1A; --on-accent: #17191C;
+    --mork: #F1F1EF; --on-mork: #17191C;
+    --warn-bg: #3A2412; --warn: #FFB27A;
+    --ok: #9BD47F; --ok-bg: #1F3317; --fel: #F2B8B5;
+    --skugga: 0 2px 10px rgba(0, 0, 0, .5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141517; --yta: #1F2124; --yta2: #2A2D31; --kant: #34373C; --kant2: #4A4E54;
+  --text: #F1F1EF; --text2: #D0D2D5; --muted: #A3A7AE;
+  --accent: #FF7A1A; --on-accent: #17191C;
+  --mork: #F1F1EF; --on-mork: #17191C;
+  --warn-bg: #3A2412; --warn: #FFB27A;
+  --ok: #9BD47F; --ok-bg: #1F3317; --fel: #F2B8B5;
+  --skugga: 0 2px 10px rgba(0, 0, 0, .5);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 16px; line-height: 1.4;
+  -webkit-tap-highlight-color: transparent;
+}
+a { color: inherit; }
+h1 { margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -.5px; line-height: 1.15; }
+h2 { margin: 0; font-size: 17px; font-weight: 800; }
+p { margin: 0; }
+[hidden] { display: none !important; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.kicker { font-size: 14px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+
+.center { min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.spinner { width: 40px; height: 40px; border-radius: 50%; border: 4px solid var(--kant); border-top-color: var(--accent); animation: snurr .8s linear infinite; }
+@keyframes snurr { to { transform: rotate(360deg); } }
+
+.card { background: var(--yta); border: 1px solid var(--kant); border-radius: 16px; padding: 16px; }
+.stack { display: flex; flex-direction: column; gap: 12px; }
+.row { display: flex; align-items: center; gap: 8px; }
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.pad { padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
+
+/* ---------- Formulär (begränsat till appens formulär) ---------- */
+.form label, .lbl { display: block; font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
+.form label.warn { color: var(--warn); }
+.form .field label { margin-bottom: 6px; }
+.form input, .form textarea {
+  width: 100%; min-height: 48px; padding: 10px 12px; border-radius: 10px;
+  border: 1px solid var(--kant2); background: var(--yta); color: var(--text);
+  font: inherit; font-size: 16px; /* 16px hindrar zoom i Safari */
+}
+.form textarea { resize: vertical; line-height: 1.45; }
+.form input:focus, .form textarea:focus { outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 1px; border-color: var(--accent); }
+.form input.saknas { border: 2px solid var(--accent); background: var(--warn-bg); }
+.form .big-text { min-height: 160px; border: 2px solid var(--mork); border-radius: 16px; padding: 14px; font-size: 17px; }
+.form > label:not(:first-child) { margin-top: 12px; }
+.form > label[for="u-fritext"] { font-size: 15px; color: var(--text); margin-bottom: 0; }
+.hint { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 12px; background: var(--yta2); color: var(--text2); font-size: 14px; }
+.hint svg { flex-shrink: 0; }
+
+.msg { min-height: 0; font-size: 14px; color: var(--muted); }
+.msg:empty { display: none; }
+.msg.error { color: var(--fel); font-weight: 600; }
+.msg.ok { color: var(--ok); font-weight: 600; }
+
+/* ---------- Knappar ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 52px; padding: 0 18px; border-radius: 14px; border: 2px solid transparent;
+  font: inherit; font-size: 17px; font-weight: 700; text-decoration: none; cursor: pointer; width: 100%;
+}
+.btn:disabled { opacity: .6; }
+.btn.primary { background: var(--accent); color: var(--on-accent); font-weight: 800; }
+.btn.dark { background: var(--mork); color: var(--on-mork); }
+.btn.ghost { background: var(--yta); color: var(--text); border-color: var(--kant2); }
+.btn.ghost.danger, .btn.ghost.confirm { color: var(--fel); }
+.btn.ghost.confirm { border-color: var(--fel); }
+.btn.link { background: none; color: var(--text2); font-weight: 600; font-size: 15px; min-height: 44px; margin-top: 4px; }
+.btn.big { min-height: 60px; font-size: 18px; border-radius: 16px; }
+.small-btn { width: auto; min-height: 44px; font-size: 15px; }
+.icon-btn {
+  width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; border: 1px solid var(--kant2);
+  background: var(--yta); color: var(--text2); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font: inherit; font-weight: 700; font-size: 12px;
+}
+.icon-btn.dark { background: var(--mork); color: var(--on-mork); border-color: var(--mork); }
+.icon-btn.confirm { width: auto; padding: 0 10px; color: var(--fel); border-color: var(--fel); }
+
+/* ---------- Inloggning ---------- */
+.login { width: 100%; max-width: 400px; text-align: center; padding: 28px 22px; }
+.login .logo { border-radius: 18px; margin-bottom: 12px; }
+.login h1 { margin-bottom: 4px; }
+.login .form { text-align: left; margin-top: 22px; }
+.login .form label:not(:first-child) { margin-top: 12px; }
+.login .btn.primary { margin-top: 18px; }
+.login .msg { margin-top: 12px; }
+
+/* ---------- Skärmar ---------- */
+.screen { min-height: 100vh; min-height: 100dvh; padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
+.head { padding: calc(20px + env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) 14px max(20px, env(safe-area-inset-left)); }
+.bar { display: flex; align-items: center; justify-content: space-between; padding: calc(8px + env(safe-area-inset-top)) 12px 4px; }
+.bar-title { font-size: 17px; font-weight: 700; }
+.bar-spacer { width: 88px; }
+.back { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 8px; color: var(--text2); font-weight: 600; text-decoration: none; }
+
+.avatar {
+  width: 44px; height: 44px; border-radius: 22px; background: var(--mork); color: var(--on-mork); flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; text-decoration: none;
+}
+.avatar.light { background: var(--yta2); color: var(--text); }
+.badge { min-height: 36px; padding: 0 12px; border-radius: 18px; border: none; background: var(--warn-bg); color: var(--warn); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+
+.seg, .seg3 { display: flex; gap: 8px; }
+.seg button, .seg3 button {
+  flex: 1; min-height: 44px; border-radius: 12px; border: 1px solid var(--kant2); background: var(--yta); color: var(--text);
+  font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+}
+.seg button[aria-pressed="true"], .seg3 button[aria-pressed="true"] { background: var(--mork); color: var(--on-mork); border-color: var(--mork); font-weight: 700; }
+
+.days { display: flex; gap: 6px; overflow-x: auto; margin: 12px -20px 16px; padding: 0 20px 2px; scrollbar-width: none; }
+.days::-webkit-scrollbar { display: none; }
+.day {
+  flex: 0 0 auto; width: 52px; min-height: 66px; border-radius: 12px; border: 1px solid var(--kant2); background: var(--yta); color: var(--text);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; font: inherit; cursor: pointer;
+}
+.day-wd { font-size: 12px; font-weight: 600; color: var(--muted); }
+.day-n { font-size: 20px; font-weight: 800; }
+.day-dot { width: 6px; height: 6px; border-radius: 3px; background: transparent; }
+.day-dot.has { background: var(--accent); }
+.day.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.day.on .day-wd { color: var(--on-accent); }
+.day.on .day-dot.has { background: var(--on-accent); }
+
+.list { display: flex; flex-direction: column; gap: 10px; }
+.job { display: flex; gap: 14px; align-items: flex-start; padding: 16px; border-radius: 16px; background: var(--yta); border: 1px solid var(--kant); text-decoration: none; color: var(--text); }
+.job:active { transform: scale(.99); }
+.job.done { opacity: .65; }
+.job-nr { width: 36px; height: 36px; border-radius: 18px; background: var(--accent); color: var(--on-accent); font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.job.done .job-nr { background: var(--yta2); color: var(--text); }
+.job-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+.job-tid { font-size: 14px; font-weight: 700; color: var(--muted); }
+.job-titel { font-size: 18px; font-weight: 700; }
+.job-adress { font-size: 15px; color: var(--text2); }
+.job-meta { font-size: 13px; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 8px; background: var(--yta2); color: var(--text2); font-size: 13px; font-weight: 700; }
+.chip.warn { background: var(--warn-bg); color: var(--warn); }
+.chip.klar { background: var(--ok-bg); color: var(--ok); }
+.chip.aterbesok { background: var(--warn-bg); color: var(--warn); }
+.empty { text-align: center; padding: 40px 16px; display: flex; flex-direction: column; gap: 6px; }
+
+.bottom {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  padding: 12px max(20px, env(safe-area-inset-right)) calc(14px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  background: linear-gradient(to top, var(--bg) 70%, transparent);
+}
+.bottom.inline { background: var(--yta); border-top: 1px solid var(--kant); }
+
+/* ---------- Nytt uppdrag ---------- */
+.people { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.person {
+  min-height: 64px; border-radius: 14px; border: 1px solid var(--kant2); background: var(--yta); color: var(--text);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font: inherit; cursor: pointer; padding: 6px 4px;
+}
+.person-in { font-size: 16px; font-weight: 800; }
+.person-namn { font-size: 12px; font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.person[aria-pressed="true"] { background: var(--mork); color: var(--on-mork); border-color: var(--mork); }
+
+/* ---------- Uppdragskort ---------- */
+.status-chip { margin-right: 8px; padding: 6px 12px; border-radius: 10px; background: var(--yta2); font-size: 13px; font-weight: 700; color: var(--text2); }
+.status-chip:empty { display: none; }
+.status-chip.klar { background: var(--ok-bg); color: var(--ok); }
+.status-chip.aterbesok { background: var(--warn-bg); color: var(--warn); }
+.kort-head { padding-top: 8px; }
+.kort-adress { font-size: 18px; color: var(--text2); margin-top: 6px; }
+.actions3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.action {
+  min-height: 76px; border-radius: 16px; border: 1px solid var(--kant2); background: var(--yta); color: var(--text);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 700; text-decoration: none; text-align: center;
+}
+.action.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 800; }
+.action.disabled { opacity: .45; }
+.warnbox { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-radius: 12px; background: var(--warn-bg); color: var(--warn); font-weight: 700; font-size: 14px; }
+.info { padding: 4px 16px; }
+.info-row { display: flex; align-items: center; gap: 12px; min-height: 48px; border-bottom: 1px solid var(--kant); }
+.info-row:last-child { border-bottom: none; }
+.info-v { flex: 1; text-align: right; font-weight: 700; }
+.kod { font-size: 18px; font-weight: 800; letter-spacing: 2px; }
+.ring-liten { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; border-radius: 12px; background: var(--mork); color: var(--on-mork); font-size: 14px; font-weight: 700; text-decoration: none; }
+.fritext { color: var(--text2); line-height: 1.5; white-space: pre-wrap; }
+.checks { display: flex; flex-direction: column; margin-top: 6px; }
+.check { display: flex; align-items: center; gap: 12px; min-height: 44px; font-size: 16px; }
+.check input { width: 24px; height: 24px; margin: 0; accent-color: var(--mork); }
+
+/* ---------- Teamet ---------- */
+.members { list-style: none; margin: 0; padding: 4px 16px; }
+.member { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--kant); }
+.member:last-child { border-bottom: none; }
+.member-text { flex: 1; display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.member-text .small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.form h2 { margin-bottom: 10px; }
+.form .btn.primary { margin-top: 14px; }
+#form-medlem .muted.small { margin-top: 10px; }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(96px + env(safe-area-inset-bottom)); z-index: 50;
+  max-width: calc(100% - 32px); padding: 12px 16px; border-radius: 12px; background: var(--mork); color: var(--on-mork);
+  font-weight: 600; font-size: 15px; box-shadow: var(--skugga); text-align: center;
+}
+.toast.error { background: #B3261E; color: #fff; }

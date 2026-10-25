@@ -1,0 +1,88 @@
+name: Tester
+
+# Kör Playwright-testerna vid varje commit och publicerar appen + testrapporten
+# till GitHub Pages: appen på /elkoll/ och rapporten på /elkoll/rapport/
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  test-och-publicera:
+    name: Testa och publicera
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}rapport/
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Installera beroenden
+        run: npm ci
+
+      - name: Installera webbläsare (WebKit och Chromium)
+        run: npx playwright install --with-deps webkit chromium
+
+      - name: Kontrollera att testplanen stämmer med testerna
+        run: node tests/kontrollera-testplan.js
+
+      - name: Hämta tidigare körningar till trenden
+        run: |
+          mkdir -p rapport
+          curl -fsSL https://dennishoglund.github.io/elkoll/rapport/historik.json -o rapport/historik.json \
+            || echo '[]' > rapport/historik.json
+
+      - name: Kör Playwright-testerna
+        id: tester
+        continue-on-error: true
+        run: npx playwright test
+
+      - name: Bygg sidan (app + rapport)
+        if: always()
+        run: |
+          mkdir -p _site
+          rsync -a ./ _site/ \
+            --exclude .git --exclude .github --exclude node_modules \
+            --exclude tests --exclude test-results --exclude rapport --exclude supabase --exclude docs \
+            --exclude package.json --exclude package-lock.json --exclude playwright.config.js \
+            --exclude README.md --exclude SPEC.md --exclude testplan --exclude CLAUDE.md --exclude AGENTS.md --exclude .gitignore
+          cp -r rapport _site/rapport
+          touch _site/.nojekyll
+
+      - name: Spara rapporten som artefakt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testrapport
+          path: rapport/
+          retention-days: 14
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Publicera på GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Markera commit som röd om tester misslyckades
+        if: steps.tester.outcome == 'failure'
+        run: |
+          echo "::error::Testerna misslyckades – se https://dennishoglund.github.io/elkoll/rapport/"
+          exit 1

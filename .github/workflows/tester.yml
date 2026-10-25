@@ -19,7 +19,7 @@ concurrency:
 jobs:
   test-och-publicera:
     name: Testa och publicera
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     environment:
       name: github-pages
@@ -37,6 +37,7 @@ jobs:
         run: npm ci
 
       - name: Installera webbläsare (WebKit och Chromium)
+        timeout-minutes: 8
         run: npx playwright install --with-deps webkit chromium
 
       - name: Kontrollera att testplanen stämmer med testerna

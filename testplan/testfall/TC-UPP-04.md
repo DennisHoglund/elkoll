@@ -8,7 +8,7 @@
 | **Prioritet** | Hög |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/uppdrag.spec.js`](../../tests/uppdrag.spec.js#L34) – *tolka fyller i fälten och markerar det som saknas* |
+| **Playwright** | [`tests/uppdrag.spec.js`](../../tests/uppdrag.spec.js#L43) – *tolka fyller i fälten och markerar det som saknas* |
 
 ## Förutsättningar
 

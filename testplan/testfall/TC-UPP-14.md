@@ -8,7 +8,7 @@
 | **Prioritet** | Hög |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/uppdrag.spec.js`](../../tests/uppdrag.spec.js#L90) – *tolkningen hänger aldrig – tidsgräns ger besked* |
+| **Playwright** | [`tests/uppdrag.spec.js`](../../tests/uppdrag.spec.js#L99) – *tolkningen hänger aldrig – tidsgräns ger besked* |
 
 ## Förutsättningar
 

@@ -127,7 +127,7 @@ window.ElkollUppdrag = (function () {
     const vantar = new Map(ko.filter((i) => i.op !== 'delete').map((i) => [i.id, i.row]));
     lista = (server || []).filter((r) => !bort.has(r.id) && !vantar.has(r.id))
       .concat([...vantar.values()].map((r) => Object.assign({}, r, { _vantar: true })));
-    render();
+    uppdatera();
     return { ok: !error, offline: error ? U.isNetworkError(error) : false, error, antal: lista.length };
   }
 

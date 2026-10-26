@@ -5,8 +5,8 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 
 | | |
 |---|---|
-| **Testfall** | 45 |
-| **Automatiserade** | 39 (körs på iPhone/WebKit och Android/Chromium) |
+| **Testfall** | 46 |
+| **Automatiserade** | 40 (körs på iPhone/WebKit och Android/Chromium) |
 | **Manuella** | 6 (kräver riktig iPhone eller riktig backend) |
 | **Senaste testrapport** | [dennishoglund.github.io/elkoll/rapport/](https://dennishoglund.github.io/elkoll/rapport/) |
 | **Krav** | [SPEC.md](../SPEC.md) |
@@ -44,6 +44,7 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 | [TC-UPP-01](testfall/TC-UPP-01.md) | [Mina visar mina uppdrag idag i tidsordning](testfall/TC-UPP-01.md) | Hög | 🤖 |
 | [TC-UPP-02](testfall/TC-UPP-02.md) | [Alla visar teamets uppdrag](testfall/TC-UPP-02.md) | Hög | 🤖 |
 | [TC-UPP-03](testfall/TC-UPP-03.md) | [Byta dag](testfall/TC-UPP-03.md) | Hög | 🤖 |
+| [TC-UPP-15](testfall/TC-UPP-15.md) | [Kollegors uppdrag dyker upp av sig själva](testfall/TC-UPP-15.md) | Hög | 🤖 |
 | [TC-UPP-04](testfall/TC-UPP-04.md) | [Tolka fyller i fälten](testfall/TC-UPP-04.md) | Hög | 🤖 |
 | [TC-UPP-05](testfall/TC-UPP-05.md) | [Spara uppdrag till kollega](testfall/TC-UPP-05.md) | Hög | 🤖 |
 | [TC-UPP-06](testfall/TC-UPP-06.md) | [Adress och uppgift krävs](testfall/TC-UPP-06.md) | Medel | 🤖 |

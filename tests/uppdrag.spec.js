@@ -21,6 +21,15 @@ test.describe('Dagens uppdrag', () => {
     await bild(page, 'Dagens uppdrag – Alla');
   });
 
+  test('kollegans nya uppdrag syns när appen öppnas igen', { annotation: { type: 'testfall', description: 'TC-UPP-15' } }, async ({ idag: page, api }) => {
+    await expect(page.locator('.job')).toHaveCount(2);
+    // Kollegan lägger in ett uppdrag till mig från sin telefon
+    api.db.elkoll_uppdrag.push({ id: 'u-ny', team_id: api.db.elkoll_team[0].id, fran: M.kalle, tilldelad: M.dennis, datum: dag(0), tid: '16:00', adress: 'Nygatan 5, Sundsvall', kund: null, telefon: null, portkod: null, uppgift: 'Akut: jordfel', material: [], saknas: [], fritext: null, status: 'planerad', kommentar: null });
+    await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+    await expect(page.locator('.job')).toHaveCount(3);
+    await expect(page.locator('.job').nth(2)).toContainText('Akut: jordfel');
+  });
+
   test('byta dag visar den dagens uppdrag', { annotation: { type: 'testfall', description: 'TC-UPP-03' } }, async ({ idag: page }) => {
     await page.locator('[data-dag="' + dag(1) + '"]').click();
     await expect(page.locator('.job')).toHaveCount(1);

@@ -8,7 +8,7 @@
 | **Prioritet** | Medel |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/uppdrag.spec.js`](../../tests/uppdrag.spec.js#L77) – *tydligt besked när tolkningen inte är igång* |
+| **Playwright** | [`tests/uppdrag.spec.js`](../../tests/uppdrag.spec.js#L86) – *tydligt besked när tolkningen inte är igång* |
 
 ## Förutsättningar
 

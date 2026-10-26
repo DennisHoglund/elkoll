@@ -57,13 +57,13 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 
 ## 6. Lagring och offline
 - Uppdrag sparas först i IndexedDB-kö (`ko.js`), sedan `upsert` på id. Borttagning köas också.
-- Synk vid inloggning, `online`, `visibilitychange` och var 60:e sekund. Märket "N väntar".
+- Synk och hämtning av kollegornas ändringar (team + uppdrag) vid inloggning, `online`, när appen öppnas igen (`visibilitychange`/`pageshow`) och var 30:e sekund medan appen syns. Märket "N väntar".
 - Senaste team och uppdrag cachas i `localStorage` för visning utan täckning.
 - Service worker: appfiler nätet först, CDN/typsnitt cache först, `/rapport/` ignoreras.
 
 ## 7. Tester
 - Playwright, iPhone 14 (WebKit) och Pixel 7 (Chromium). Supabase, tolkningsfunktionen, CDN och typsnitt mockas i `tests/mock.js`.
-- Testplan i `testplan/` (45 testfall, 39 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
+- Testplan i `testplan/` (46 testfall, 40 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
 
 ## 8. Beslut
 - Inloggning med lösenord i stället för magisk länk – delat projekt utan egen SMTP.

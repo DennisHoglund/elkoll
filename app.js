@@ -127,9 +127,24 @@
     if (res.sent) await window.ElkollUppdrag.load();
     return res;
   }
-  window.addEventListener('online', synka);
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') synka(); });
-  setInterval(synka, 60000);
+  // Skicka det egna och hämta kollegornas ändringar: när nätet kommer tillbaka, när appen
+  // öppnas igen och var 30:e sekund medan den syns.
+  let hamtar = false;
+  async function uppdateraAllt() {
+    if (!userId || hamtar) return;
+    hamtar = true;
+    try {
+      await synka();
+      if (navigator.onLine) {
+        await window.ElkollTeam.load(email);
+        await window.ElkollUppdrag.load();
+      }
+    } finally { hamtar = false; }
+  }
+  window.addEventListener('online', uppdateraAllt);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') uppdateraAllt(); });
+  window.addEventListener('pageshow', (e) => { if (e.persisted) uppdateraAllt(); });
+  setInterval(() => { if (document.visibilityState === 'visible') uppdateraAllt(); }, 30000);
   $('queue-badge').addEventListener('click', async () => {
     if (!navigator.onLine) { U.toast('Ingen täckning just nu – försöker igen automatiskt.', 'ok', 3000); return; }
     await synka();

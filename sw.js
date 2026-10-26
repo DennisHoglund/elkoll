@@ -1,5 +1,5 @@
 // Höj versionen vid varje deploy så att telefonen hämtar nya filer.
-const CACHE = 'elkoll-v6';
+const CACHE = 'elkoll-v7';
 
 const SHELL = [
   './',

@@ -30,10 +30,11 @@ window.ElkollFoto = (function () {
   function setUser(id) { userId = id; }
 
   // ---------- Krympa ----------
+  // Avkoda bilden: createImageBitmap med rätt orientering, utan alternativ, och sist <img> (klarar HEIC i Safari)
   async function decode(file) {
-    try {
-      return await createImageBitmap(file, { imageOrientation: 'from-image' });
-    } catch (e) {
+    try { return await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch (e) { /* prova nästa */ }
+    try { return await createImageBitmap(file); } catch (e) { /* prova nästa */ }
+    {
       const url = URL.createObjectURL(file);
       try {
         const img = new Image();

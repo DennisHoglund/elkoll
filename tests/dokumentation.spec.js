@@ -50,16 +50,16 @@ test.describe('Dokumentation', () => {
     await expect.poll(() => api.borttagnaFoton).toContain(TEAM + '/u1/f1.jpg');
   });
 
-  test('foto utan täckning sparas i telefonen och laddas upp sedan', { annotation: { type: 'testfall', description: 'TC-DOK-04' } }, async ({ idag: page, api, context }) => {
+  test('foto utan täckning sparas i telefonen och laddas upp sedan', { annotation: { type: 'testfall', description: 'TC-DOK-04' } }, async ({ idag: page, api }) => {
     await oppnaKort(page);
-    await context.setOffline(true);
+    // Dålig täckning: telefonen tror att den är online men inget når servern (som i en källare)
     api.nere = true;
     await page.getByLabel('Ta foto efter').setInputFiles(FOTO_FIL);
     await expect(page.locator('#toast')).toHaveText('Fotot är sparat i telefonen – laddas upp när du har täckning');
     await expect(page.locator('#foto-yta .foto-vantar')).toHaveText('Väntar');
     await expect(page.locator('#foto-yta .foto img')).toBeVisible();
     api.nere = false;
-    await context.setOffline(false);
+    await page.evaluate(() => window.dispatchEvent(new Event('online')));
     await expect.poll(() => api.db.elkoll_foto.length).toBe(1);
     expect(api.db.elkoll_foto[0].typ).toBe('efter');
     expect(api.uppladdade).toHaveLength(1);

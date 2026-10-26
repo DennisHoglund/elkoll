@@ -85,5 +85,14 @@ jobs:
       - name: Markera commit som röd om tester misslyckades
         if: steps.tester.outcome == 'failure'
         run: |
+          node -e '
+            const r = require("./rapport/resultat.json");
+            JSON.stringify(r, (k, v) => {
+              if (v && v.perProjekt) for (const [p, x] of Object.entries(v.perProjekt)) {
+                if (x.status === "unexpected") console.log("::error title=" + p + " – " + v.namn + "::" + (x.fel || []).join(" | ").replace(/\s+/g, " ").slice(0, 700));
+              }
+              return v;
+            });
+          ' || true
           echo "::error::Testerna misslyckades – se https://dennishoglund.github.io/elkoll/rapport/"
           exit 1

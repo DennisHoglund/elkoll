@@ -21,6 +21,13 @@ jobs:
     name: Testa och publicera
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    # Playwrights officiella image har WebKit och Chromium färdiginstallerade – ingen
+    # installation som kan hänga sig. Versionen måste matcha @playwright/test i package.json.
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --ipc=host
+    env:
+      HOME: /root
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}rapport/
@@ -28,17 +35,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
       - name: Installera beroenden
         run: npm ci
-
-      - name: Installera webbläsare (WebKit och Chromium)
-        timeout-minutes: 8
-        run: npx playwright install --with-deps webkit chromium
 
       - name: Kontrollera att testplanen stämmer med testerna
         run: node tests/kontrollera-testplan.js
@@ -46,8 +44,7 @@ jobs:
       - name: Hämta tidigare körningar till trenden
         run: |
           mkdir -p rapport
-          curl -fsSL https://dennishoglund.github.io/elkoll/rapport/historik.json -o rapport/historik.json \
-            || echo '[]' > rapport/historik.json
+          node -e "fetch('https://dennishoglund.github.io/elkoll/rapport/historik.json').then(r => r.ok ? r.text() : '[]').catch(() => '[]').then(t => require('fs').writeFileSync('rapport/historik.json', t))"
 
       - name: Kör Playwright-testerna
         id: tester
@@ -58,11 +55,12 @@ jobs:
         if: always()
         run: |
           mkdir -p _site
-          rsync -a ./ _site/ \
-            --exclude .git --exclude .github --exclude node_modules \
-            --exclude tests --exclude test-results --exclude rapport --exclude supabase --exclude docs \
-            --exclude package.json --exclude package-lock.json --exclude playwright.config.js \
-            --exclude README.md --exclude SPEC.md --exclude testplan --exclude CLAUDE.md --exclude AGENTS.md --exclude .gitignore
+          tar -cf - \
+            --exclude ./_site --exclude ./.git --exclude ./.github --exclude ./node_modules \
+            --exclude ./tests --exclude ./test-results --exclude ./rapport --exclude ./supabase --exclude ./docs \
+            --exclude ./package.json --exclude ./package-lock.json --exclude ./playwright.config.js \
+            --exclude ./README.md --exclude ./SPEC.md --exclude ./testplan --exclude ./CLAUDE.md --exclude ./AGENTS.md --exclude ./.gitignore \
+            . | tar -xf - -C _site
           cp -r rapport _site/rapport
           touch _site/.nojekyll
 

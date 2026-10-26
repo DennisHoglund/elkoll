@@ -1,10 +1,12 @@
 // Mockar allt externt så att testerna är snabba, stabila och aldrig rör riktig data:
 // Supabase (auth, databas, tolkningsfunktionen), CDN-bibliotek och typsnitt.
+const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const SUPABASE = 'https://sjdznlmnvubqscftdkoj.supabase.co';
 const STORAGE_KEY = 'sb-sjdznlmnvubqscftdkoj-auth-token';
+const FOTO = fs.readFileSync(path.join(__dirname, 'data', 'foto.jpg'));
 
 const ANVANDARE = {
   id: '11111111-2222-3333-4444-555555555555',
@@ -50,7 +52,8 @@ function exempelData() {
       { id: 'u2', team_id: TEAM, fran: M.kalle, tilldelad: M.dennis, datum: dag(0), tid: '13:30', adress: 'Södra vägen 21, Sundsvall', kund: 'Erik', telefon: null, portkod: null, uppgift: 'Montera 4 uttag i garage', material: [], saknas: ['portkod', 'telefon'], fritext: null, status: 'planerad', kommentar: null },
       { id: 'u3', team_id: TEAM, fran: M.dennis, tilldelad: M.maria, datum: dag(0), tid: '10:00', adress: 'Bergsgatan 4, Sundsvall', kund: 'Bo', telefon: '070-555 55 55', portkod: null, uppgift: 'Felsöka jordfel i kök', material: [], saknas: [], fritext: null, status: 'planerad', kommentar: null },
       { id: 'u4', team_id: TEAM, fran: M.kalle, tilldelad: M.dennis, datum: dag(1), tid: '08:00', adress: 'Kyrkogatan 3, Sundsvall', kund: null, telefon: null, portkod: null, uppgift: 'Byta armatur i trapphus', material: [], saknas: [], fritext: null, status: 'planerad', kommentar: null }
-    ]
+    ],
+    elkoll_foto: []
   };
 }
 
@@ -73,7 +76,7 @@ function filtrera(rows, params) {
 }
 
 async function mocka(page, { data = exempelData(), tolkning = TOLKNING } = {}) {
-  const api = { db: data, tolkning, tolkStatus: 200, tolkFordrojning: 0, tolkAnrop: [], anrop: [], nere: false, signup: null };
+  const api = { db: data, tolkning, tolkStatus: 200, tolkFordrojning: 0, tolkAnrop: [], anrop: [], nere: false, signup: null, uppladdade: [], borttagnaFoton: [] };
 
   await page.route(/cdn\.jsdelivr\.net/, (route) => {
     if (/supabase-js/.test(route.request().url())) {
@@ -117,6 +120,22 @@ async function mocka(page, { data = exempelData(), tolkning = TOLKNING } = {}) {
       return json(route, 200, api.tolkning);
     }
 
+    // ---- Foton ----
+    if (p.startsWith('/storage/v1/object/sign/elkoll-foton') && m === 'POST') {
+      const body = req.postDataJSON() || {};
+      return json(route, 200, (body.paths || []).map((x) => ({ path: x, signedURL: '/object/sign/elkoll-foton/' + x + '?token=test', error: null })));
+    }
+    if (p.startsWith('/storage/v1/object/elkoll-foton/') && (m === 'POST' || m === 'PUT')) {
+      const fil = decodeURIComponent(p.replace('/storage/v1/object/elkoll-foton/', ''));
+      api.uppladdade.push({ path: fil, bytes: (req.postDataBuffer() || Buffer.alloc(0)).length });
+      return json(route, 200, { Key: 'elkoll-foton/' + fil });
+    }
+    if (p === '/storage/v1/object/elkoll-foton' && m === 'DELETE') {
+      api.borttagnaFoton.push(...((req.postDataJSON() || {}).prefixes || []));
+      return json(route, 200, []);
+    }
+    if (p.startsWith('/storage/v1/object/')) return route.fulfill({ body: FOTO, contentType: 'image/jpeg', headers: cors() });
+
     // ---- Databas ----
     const tabell = p.replace('/rest/v1/', '');
     if (api.db[tabell]) {
@@ -154,6 +173,7 @@ async function mocka(page, { data = exempelData(), tolkning = TOLKNING } = {}) {
         const bort = new Set(filtrera(rows, url.searchParams).map((r) => r.id));
         api.db[tabell] = rows.filter((r) => !bort.has(r.id));
         // som i databasen: borttagen medlem → uppdragen blir otilldelade
+        if (tabell === 'elkoll_uppdrag') api.db.elkoll_foto = api.db.elkoll_foto.filter((f) => !bort.has(f.uppdrag_id));
         if (tabell === 'elkoll_medlem') api.db.elkoll_uppdrag.forEach((u) => { if (bort.has(u.tilldelad)) u.tilldelad = null; if (bort.has(u.fran)) u.fran = null; });
         return route.fulfill({ status: 204, headers: cors() });
       }
@@ -186,4 +206,4 @@ async function inloggad(page, user) {
   }, [STORAGE_KEY, JSON.stringify(s)]);
 }
 
-module.exports = { mocka, inloggad, ANVANDARE, LOSENORD, exempelData, TOLKNING, TEAM, M, dag };
+module.exports = { FOTO_FIL: path.join(__dirname, 'data', 'foto.jpg'), mocka, inloggad, ANVANDARE, LOSENORD, exempelData, TOLKNING, TEAM, M, dag };

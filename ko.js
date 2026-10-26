@@ -31,7 +31,8 @@ window.ElkollKo = (function () {
     });
   }
 
-  // item: { id, userId, op: 'upsert' | 'delete', row, created }
+  // item: { id, userId, op: 'upsert' | 'delete' | 'foto' | 'foto-delete', row, data?, created }
+  // Foton ligger som ArrayBuffer (data), aldrig Blob – Safari klarar inte Blob i IndexedDB överallt.
   const put = (item) => tx('readwrite', (s) => s.put(item));
   const del = (id) => tx('readwrite', (s) => s.delete(id));
   const all = () => tx('readonly', (s) => s.getAll()).then((r) => r || []);
@@ -48,7 +49,19 @@ window.ElkollKo = (function () {
         for (const item of items) {
           if (!navigator.onLine) break;
           let res;
-          if (item.op === 'delete') res = await sb.from('elkoll_uppdrag').delete().eq('id', item.id);
+          if (item.op === 'foto') {
+            // Foto: ladda upp filen först, sedan raden. upsert gör att ett avbrutet försök kan göras om.
+            const blob = new Blob([item.data], { type: 'image/jpeg' });
+            const up = await sb.storage.from('elkoll-foton').upload(item.row.path, blob, { contentType: 'image/jpeg', upsert: true });
+            if (up.error) throw up.error;
+            res = await sb.from('elkoll_foto').upsert(item.row, { onConflict: 'id' });
+          } else if (item.op === 'foto-delete') {
+            res = await sb.from('elkoll_foto').delete().eq('id', item.id);
+            if (!res.error) {
+              const rm = await sb.storage.from('elkoll-foton').remove([item.row.path]);
+              if (rm.error) throw rm.error;
+            }
+          } else if (item.op === 'delete') res = await sb.from('elkoll_uppdrag').delete().eq('id', item.id);
           // upsert: samma uppdrag kan skickas igen utan dubbletter om förra försöket bröts
           else res = await sb.from('elkoll_uppdrag').upsert(item.row, { onConflict: 'id' });
           if (res.error) throw res.error;

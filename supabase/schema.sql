@@ -117,3 +117,56 @@ create policy "elkoll_uppdrag_delete" on public.elkoll_uppdrag for delete to aut
 revoke all on public.elkoll_team, public.elkoll_medlem, public.elkoll_uppdrag from anon;
 grant select, insert, update, delete on public.elkoll_team, public.elkoll_medlem, public.elkoll_uppdrag to authenticated;
 grant select, insert, update, delete on public.elkoll_team, public.elkoll_medlem, public.elkoll_uppdrag to service_role;
+
+-- ---------------------------------------------------------------------------
+-- Foton (dokumentation på plats). Filen ligger i bucketen elkoll-foton under
+-- <team_id>/<uppdrag_id>/<foto_id>.jpg, raden här talar om vilket uppdrag och före/efter.
+create table if not exists public.elkoll_foto (
+  id          text primary key,                                   -- skapas i appen, så foton kan sparas offline först
+  uppdrag_id  text not null references public.elkoll_uppdrag(id) on delete cascade,
+  team_id     uuid not null references public.elkoll_team(id) on delete cascade,
+  typ         text not null default 'fore' check (typ in ('fore', 'efter')),
+  path        text not null,
+  skapad_av   uuid default auth.uid() references auth.users(id) on delete set null,
+  created_at  timestamptz not null default now()
+);
+create index if not exists elkoll_foto_uppdrag on public.elkoll_foto (uppdrag_id);
+
+alter table public.elkoll_foto enable row level security;
+drop policy if exists "elkoll_foto_select" on public.elkoll_foto;
+drop policy if exists "elkoll_foto_insert" on public.elkoll_foto;
+drop policy if exists "elkoll_foto_update" on public.elkoll_foto;
+drop policy if exists "elkoll_foto_delete" on public.elkoll_foto;
+create policy "elkoll_foto_select" on public.elkoll_foto for select to authenticated
+  using (team_id in (select public.elkoll_mina_team()));
+create policy "elkoll_foto_insert" on public.elkoll_foto for insert to authenticated
+  with check (team_id in (select public.elkoll_mina_team()));
+create policy "elkoll_foto_update" on public.elkoll_foto for update to authenticated
+  using (team_id in (select public.elkoll_mina_team())) with check (team_id in (select public.elkoll_mina_team()));
+create policy "elkoll_foto_delete" on public.elkoll_foto for delete to authenticated
+  using (team_id in (select public.elkoll_mina_team()));
+revoke all on public.elkoll_foto from anon;
+grant select, insert, update, delete on public.elkoll_foto to authenticated, service_role;
+
+-- Privat bucket, max 1 MB per foto (appen krymper till ca 150–250 kB)
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('elkoll-foton', 'elkoll-foton', false, 1048576, array['image/jpeg'])
+on conflict (id) do update
+  set public = excluded.public,
+      file_size_limit = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
+
+-- Teamets medlemmar kommer åt mappen <team_id>/ – inget annat
+drop policy if exists "elkoll_foton_select" on storage.objects;
+drop policy if exists "elkoll_foton_insert" on storage.objects;
+drop policy if exists "elkoll_foton_update" on storage.objects;
+drop policy if exists "elkoll_foton_delete" on storage.objects;
+create policy "elkoll_foton_select" on storage.objects for select to authenticated
+  using (bucket_id = 'elkoll-foton' and (storage.foldername(name))[1] in (select t::text from public.elkoll_mina_team() t));
+create policy "elkoll_foton_insert" on storage.objects for insert to authenticated
+  with check (bucket_id = 'elkoll-foton' and (storage.foldername(name))[1] in (select t::text from public.elkoll_mina_team() t));
+create policy "elkoll_foton_update" on storage.objects for update to authenticated
+  using (bucket_id = 'elkoll-foton' and (storage.foldername(name))[1] in (select t::text from public.elkoll_mina_team() t))
+  with check (bucket_id = 'elkoll-foton' and (storage.foldername(name))[1] in (select t::text from public.elkoll_mina_team() t));
+create policy "elkoll_foton_delete" on storage.objects for delete to authenticated
+  using (bucket_id = 'elkoll-foton' and (storage.foldername(name))[1] in (select t::text from public.elkoll_mina_team() t));

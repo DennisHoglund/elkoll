@@ -135,12 +135,14 @@
 
   window.ElkollTeam.setup(sb, () => { route(); window.ElkollUppdrag.load(); });
   window.ElkollUppdrag.setup(sb, { synka });
+  window.ElkollFoto.setup(sb, { synka });
 
   // ---------- Navigering (#idag, #nytt, #nytt/ID, #uppdrag/ID, #team) ----------
   function route() {
     if (!window.ElkollTeam.state.team) { screen('start'); return; }
     const [vy, id] = (location.hash.replace(/^#/, '') || 'idag').split('/');
     const rid = id ? decodeURIComponent(id) : null;
+    if (vy !== 'uppdrag') window.ElkollFoto.lamna();
     if (vy === 'nytt') { window.ElkollUppdrag.openNytt(rid); screen('nytt'); }
     else if (vy === 'uppdrag' && rid) { window.ElkollUppdrag.openKort(rid); screen('uppdrag'); }
     else if (vy === 'team') { window.ElkollTeam.render(); screen('team'); }
@@ -163,6 +165,7 @@
     $('user-email').textContent = 'Inloggad som ' + email;
     $('start-email').textContent = 'Inloggad som ' + email;
     window.ElkollUppdrag.setUser(userId);
+    window.ElkollFoto.setUser(userId);
     show('app');
     const teamRes = await window.ElkollTeam.load(email);
     if (!teamRes.ok && !teamRes.offline) {

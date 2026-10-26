@@ -228,3 +228,26 @@ p { margin: 0; }
   font-weight: 600; font-size: 15px; box-shadow: var(--skugga); text-align: center;
 }
 .toast.error { background: #B3261E; color: #fff; }
+
+/* ---------- Dokumentation / foton ---------- */
+.foto-grupp { margin-bottom: 14px; }
+.foto-grupp h3 { margin: 0 0 8px; font-size: 15px; font-weight: 800; }
+.foto-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.foto, .foto-ny {
+  position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; padding: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font: inherit;
+}
+.foto { border: 1px solid var(--kant); background: var(--yta2); }
+.foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.foto-tom { color: var(--muted); font-size: 13px; font-weight: 600; }
+.foto-vantar { position: absolute; left: 6px; bottom: 6px; padding: 2px 8px; border-radius: 8px; background: var(--warn-bg); color: var(--warn); font-size: 12px; font-weight: 700; }
+.foto-ny { flex-direction: column; gap: 6px; border: 2px dashed var(--kant2); background: var(--yta); color: var(--text); font-size: 14px; font-weight: 700; }
+.form .foto-ny { display: flex; margin: 0; color: var(--text); font-size: 14px; }
+.file-input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.foto-visning {
+  position: fixed; inset: 0; z-index: 60; background: rgba(0, 0, 0, .92); color: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  padding: calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+}
+.foto-visning img { max-width: 100%; max-height: 75vh; border-radius: 12px; object-fit: contain; }
+.foto-knappar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; max-width: 420px; }

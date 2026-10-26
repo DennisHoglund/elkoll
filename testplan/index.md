@@ -5,9 +5,9 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 
 | | |
 |---|---|
-| **Testfall** | 32 |
-| **Automatiserade** | 28 (körs på iPhone/WebKit och Android/Chromium) |
-| **Manuella** | 4 (kräver riktig iPhone eller riktig backend) |
+| **Testfall** | 39 |
+| **Automatiserade** | 34 (körs på iPhone/WebKit och Android/Chromium) |
+| **Manuella** | 5 (kräver riktig iPhone eller riktig backend) |
 | **Senaste testrapport** | [dennishoglund.github.io/elkoll/rapport/](https://dennishoglund.github.io/elkoll/rapport/) |
 | **Krav** | [SPEC.md](../SPEC.md) |
 
@@ -55,6 +55,18 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 | [TC-UPP-12](testfall/TC-UPP-12.md) | [Diktera med tangentbordet](testfall/TC-UPP-12.md) | Hög | 🖐️ |
 | [TC-UPP-13](testfall/TC-UPP-13.md) | [Riktig tolkning med Gemini](testfall/TC-UPP-13.md) | Hög | 🖐️ |
 | [TC-UPP-14](testfall/TC-UPP-14.md) | [Tolkningen hänger aldrig](testfall/TC-UPP-14.md) | Hög | 🤖 |
+
+## Dokumentation
+
+| ID | Testfall | Prio | Typ |
+|---|---|---|---|
+| [TC-DOK-01](testfall/TC-DOK-01.md) | [Ta foto före](testfall/TC-DOK-01.md) | Hög | 🤖 |
+| [TC-DOK-02](testfall/TC-DOK-02.md) | [Teamet ser varandras foton](testfall/TC-DOK-02.md) | Hög | 🤖 |
+| [TC-DOK-03](testfall/TC-DOK-03.md) | [Ta bort foto](testfall/TC-DOK-03.md) | Medel | 🤖 |
+| [TC-DOK-04](testfall/TC-DOK-04.md) | [Foto utan täckning](testfall/TC-DOK-04.md) | Hög | 🤖 |
+| [TC-DOK-05](testfall/TC-DOK-05.md) | [Spara anteckning](testfall/TC-DOK-05.md) | Hög | 🤖 |
+| [TC-DOK-06](testfall/TC-DOK-06.md) | [Borttaget uppdrag tar med sina foton](testfall/TC-DOK-06.md) | Medel | 🤖 |
+| [TC-DOK-07](testfall/TC-DOK-07.md) | [Kameran på iPhone](testfall/TC-DOK-07.md) | Hög | 🖐️ |
 
 ## Offline
 

@@ -342,6 +342,12 @@ window.ElkollUppdrag = (function () {
       (r.material && r.material.length ? '<div class="card"><h2>Material att ta med</h2><div class="checks">' +
         r.material.map((m, i) => '<label class="check"><input type="checkbox" data-bock="' + i + '"' + (b.includes(i) ? ' checked' : '') + '> ' + esc(m) + '</label>').join('') +
         '</div></div>' : '') +
+      '<div class="card form stack" id="dokumentation"><h2>Dokumentation</h2>' +
+        '<div id="foto-yta"></div>' +
+        '<label for="kort-anteckning">Anteckningar</label>' +
+        '<textarea id="kort-anteckning" rows="4" placeholder="Diktera vad som gjordes och vad som återstår">' + esc(r.kommentar || '') + '</textarea>' +
+        '<button type="button" class="btn ghost" data-spara-anteckning>Spara anteckning</button>' +
+      '</div>' +
       '<div class="card stack"><h2>Status</h2><div class="seg3">' +
         ['planerad', 'klar', 'aterbesok'].map((s) => '<button type="button" data-status="' + s + '" aria-pressed="' + (r.status === s) + '">' + STATUS[s] + '</button>').join('') +
       '</div></div>' +
@@ -349,6 +355,7 @@ window.ElkollUppdrag = (function () {
         '<a class="btn ghost" href="#nytt/' + encodeURIComponent(r.id) + '">Ändra</a>' +
         '<button class="btn ghost danger" type="button" data-radera>Ta bort</button>' +
       '</div>';
+    window.ElkollFoto.visa(r, $('foto-yta'));
   }
 
   async function klickKort(e) {
@@ -373,6 +380,13 @@ window.ElkollUppdrag = (function () {
       openKort(id);
       return;
     }
+    if (e.target.closest('[data-spara-anteckning]')) {
+      const kommentar = $('kort-anteckning').value.trim() || null;
+      const row = Object.assign({}, r, { kommentar, updated_at: new Date().toISOString() });
+      delete row._vantar;
+      await sparaRad(row);
+      return;
+    }
     const rad = e.target.closest('[data-radera]');
     if (rad) {
       if (!rad.classList.contains('confirm')) {
@@ -381,6 +395,7 @@ window.ElkollUppdrag = (function () {
         setTimeout(() => { if (rad.isConnected) { rad.classList.remove('confirm'); rad.textContent = 'Ta bort'; } }, 4000);
         return;
       }
+      await window.ElkollFoto.taBortAlla(r.id);
       await sparaRad({ id: r.id }, 'delete');
       U.store.del('elkoll-bockat-' + id);
       location.hash = '#idag';

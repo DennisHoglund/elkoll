@@ -17,7 +17,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 - Ikon: orange ruta med svart fält och orange blixt.
 - GUI-skisser: Claude-artefakten *Hantverksappen – GUI-skisser*.
 
-## 4. Funktioner (steg 1–3, klart)
+## 4. Funktioner (steg 1–3 och 5, klart)
 ### 4.1 Inloggning
 - E-post + lösenord. Ny kollega skapar konto i appen (`signUp`). Bekräftelsemejl enligt projektets befintliga inställningar.
 ### 4.2 Teamet
@@ -36,10 +36,17 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 - Navigera (Apple Kartor på iPhone, annars Google Maps), Ring kund, På väg-sms, Ring avsändaren.
 - Kunduppgifter, portkod i stor stil, avsändarens originaltext, materiallista att bocka av (sparas lokalt), status Planerad/Klar/Återbesök, Ändra, Ta bort (två tryck).
 
+### 4.6 Dokumentation på plats (steg 5)
+- På uppdragskortet: foton **Före** och **Efter** (Ta foto → kamera eller bildbibliotek), tryck för att visa stort, ta bort med två tryck.
+- Foton krymps till ≤ 250 kB JPEG (max 1280 px), sparas i IndexedDB som ArrayBuffer och laddas upp till privata bucketen `elkoll-foton` under `<team>/<uppdrag>/<foto>.jpg`. Visas via signerade URL:er.
+- Anteckningar (dikteras) sparas i `kommentar` på uppdraget.
+- Tas uppdraget bort tas dess foton också bort.
+
 ## 5. Datamodell (`supabase/schema.sql`)
 - `elkoll_team(id, namn, skapad_av)`
 - `elkoll_medlem(id, team_id, namn, telefon, epost)` – unik per team och e-post.
 - `elkoll_uppdrag(id text, team_id, skapad_av, fran, tilldelad, datum, tid, adress, kund, telefon, portkod, uppgift, material[], saknas[], fritext, status, kommentar)`
+- `elkoll_foto(id text, uppdrag_id, team_id, typ fore|efter, path, skapad_av)` + bucket `elkoll-foton` (storage-policies på första mappnivån = team).
 - RLS: funktionen `elkoll_mina_team()` ger team där inloggningens e-post finns i `elkoll_medlem`. Allt filtreras på den. `anon` får inget.
 
 ## 6. Lagring och offline
@@ -50,7 +57,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 
 ## 7. Tester
 - Playwright, iPhone 14 (WebKit) och Pixel 7 (Chromium). Supabase, tolkningsfunktionen, CDN och typsnitt mockas i `tests/mock.js`.
-- Testplan i `testplan/` (32 testfall, 28 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
+- Testplan i `testplan/` (39 testfall, 34 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
 
 ## 8. Beslut
 - Inloggning med lösenord i stället för magisk länk – delat projekt utan egen SMTP.
@@ -60,5 +67,5 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 
 ## 9. Kvar att göra
 - Steg 4: Karta per datum (Leaflet) med numrerade nålar och geokodade adresser.
-- Steg 5: Dokumentera på plats – foton före/efter (≤ 250 kB i privat bucket `elkoll-foton`), dikterade anteckningar, egenkontroll.
+- Egenkontroll (checklista per uppdragstyp).
 - Push-notis vid nytt uppdrag. Platsminne (tidigare besök på samma adress).

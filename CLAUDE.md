@@ -20,7 +20,7 @@ Läs `SPEC.md` för hela specifikationen. Det här är reglerna som gäller vid 
 - Ett uppdrag får aldrig gå förlorat: spara lokalt (IndexedDB via `ko.js`) först, skicka sedan.
 
 ## Vid varje ändring
-1. Höj `CACHE`-versionen i `sw.js` (`elkoll-vN`) när appfiler ändras, och lägg nya filer i `SHELL`.
+1. Höj `CACHE`-versionen i `sw.js` (`elkoll-vN`) och `version` i `config.js` (samma N) när appfiler ändras, och lägg nya filer i `SHELL`.
 2. Nya JS-filer: lägg till `<script>` i `index.html` och i `SHELL`.
 3. Kör testerna: `npx playwright test` (lokalt räcker `--project="Android (Chromium)"` om WebKit saknas).
 4. Lägg till eller uppdatera tester i `tests/`. All extern trafik mockas i `tests/mock.js`. `bild(page, 'Namn')` för skärmdumpar i rapporten.

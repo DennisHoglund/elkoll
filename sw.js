@@ -1,5 +1,5 @@
 // Höj versionen vid varje deploy så att telefonen hämtar nya filer.
-const CACHE = 'elkoll-v5';
+const CACHE = 'elkoll-v6';
 
 const SHELL = [
   './',
@@ -59,7 +59,8 @@ self.addEventListener('fetch', (event) => {
   // Sidladdning: nätet först, annars cachad sida (offline)
   if (req.mode === 'navigate') {
     event.respondWith(
-      fetch(req)
+      // no-cache: fråga alltid servern (GitHub Pages låter annars webbläsaren cacha i 10 min)
+      fetch(req, { cache: 'no-cache' })
         .then((res) => {
           caches.open(CACHE).then((c) => c.put('./index.html', res.clone()));
           return res;
@@ -71,7 +72,7 @@ self.addEventListener('fetch', (event) => {
 
   // Egna filer: nätet först så att nya versioner alltid används, cache vid offline
   event.respondWith(
-    fetch(req)
+    fetch(req, { cache: 'no-cache' })
       .then((res) => {
         if (res.ok) caches.open(CACHE).then((c) => c.put(req, res.clone()));
         return res;

@@ -42,6 +42,8 @@
     el.className = 'msg' + (kind ? ' ' + kind : '');
   }
 
+  $('app-version').textContent = 'Elkoll version ' + ((window.ELKOLL_CONFIG || {}).version || '?');
+
   // ---------- Supabase ----------
   const cfg = window.ELKOLL_CONFIG || {};
   if (!window.supabase || !cfg.supabaseUrl) {

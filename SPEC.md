@@ -22,7 +22,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 - E-post + lösenord. Ny kollega skapar konto i appen (`signUp`). Bekräftelsemejl enligt projektets befintliga inställningar.
 ### 4.2 Teamet
 - Första gången: gå med (någon har lagt till din e-post) eller skapa nytt team (företag, ditt namn, mobil).
-- Lista med namn, mobil, e-post, ringknapp. Lägg till kollega (namn, mobil, e-post). Ta bort med två tryck – alla i teamet får ta bort andra, inte sig själva.
+- Lista med namn, mobil, e-post, ringknapp och **Skicka inbjudan** (öppnar sms med länk, instruktion och e-posten kollegan ska använda – appen skickar inget mejl själv). Lägg till kollega (namn, mobil, e-post). Ta bort med två tryck – alla i teamet får ta bort andra, inte sig själva.
 - Borttagen kollegas uppdrag blir otilldelade (`on delete set null`).
 ### 4.3 Dagens uppdrag
 - Dagrad: idag + 6 dagar, prick på dagar med uppdrag. **Mina** / **Alla** (valet sparas).
@@ -50,7 +50,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 
 ## 7. Tester
 - Playwright, iPhone 14 (WebKit) och Pixel 7 (Chromium). Supabase, tolkningsfunktionen, CDN och typsnitt mockas i `tests/mock.js`.
-- Testplan i `testplan/` (31 testfall, 27 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
+- Testplan i `testplan/` (32 testfall, 28 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
 
 ## 8. Beslut
 - Inloggning med lösenord i stället för magisk länk – delat projekt utan egen SMTP.

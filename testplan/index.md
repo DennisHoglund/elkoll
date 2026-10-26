@@ -5,8 +5,8 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 
 | | |
 |---|---|
-| **Testfall** | 31 |
-| **Automatiserade** | 27 (körs på iPhone/WebKit och Android/Chromium) |
+| **Testfall** | 32 |
+| **Automatiserade** | 28 (körs på iPhone/WebKit och Android/Chromium) |
 | **Manuella** | 4 (kräver riktig iPhone eller riktig backend) |
 | **Senaste testrapport** | [dennishoglund.github.io/elkoll/rapport/](https://dennishoglund.github.io/elkoll/rapport/) |
 | **Krav** | [SPEC.md](../SPEC.md) |
@@ -35,6 +35,7 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 | [TC-TEAM-04](testfall/TC-TEAM-04.md) | [Samma e-post kan inte läggas till två gånger](testfall/TC-TEAM-04.md) | Medel | 🤖 |
 | [TC-TEAM-05](testfall/TC-TEAM-05.md) | [Ta bort kollega](testfall/TC-TEAM-05.md) | Hög | 🤖 |
 | [TC-TEAM-06](testfall/TC-TEAM-06.md) | [Inbjuden kollega kommer in i teamet](testfall/TC-TEAM-06.md) | Hög | 🖐️ |
+| [TC-TEAM-07](testfall/TC-TEAM-07.md) | [Skicka inbjudan via sms](testfall/TC-TEAM-07.md) | Hög | 🤖 |
 
 ## Uppdrag
 

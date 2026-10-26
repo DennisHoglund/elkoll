@@ -219,6 +219,7 @@ p { margin: 0; }
 .form h2 { margin-bottom: 10px; }
 .form .btn.primary { margin-top: 14px; }
 #form-medlem .muted.small { margin-top: 10px; }
+.invite { display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; min-height: 36px; margin-top: 6px; padding: 0 12px; border-radius: 10px; background: var(--yta2); color: var(--text); font-size: 14px; font-weight: 700; text-decoration: none; }
 
 /* ---------- Toast ---------- */
 .toast {

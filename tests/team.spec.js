@@ -37,7 +37,7 @@ test.describe('Teamet', () => {
     await page.locator('#form-medlem').getByLabel('Mobilnummer').fill('070-000 00 09');
     await page.locator('#form-medlem').getByLabel('E-post').fill('Sara@Elkoll.se');
     await page.getByRole('button', { name: 'Lägg till' }).click();
-    await expect(page.locator('#medlem-msg')).toHaveText('Sara Berg är tillagd.');
+    await expect(page.locator('#medlem-msg')).toHaveText('Sara Berg är tillagd. Tryck Skicka inbjudan för att meddela hen.');
     await expect(page.locator('.member')).toHaveCount(4);
     expect(api.db.elkoll_medlem.find((m) => m.namn === 'Sara Berg')).toMatchObject({ epost: 'sara@elkoll.se', telefon: '070-000 00 09' });
   });
@@ -63,5 +63,17 @@ test.describe('Teamet', () => {
     await page.getByRole('link', { name: 'Uppdrag' }).click();
     await page.getByRole('button', { name: 'Alla' }).click();
     await expect(page.locator('.job').filter({ hasText: 'Felsöka jordfel' })).toContainText('Otilldelad');
+  });
+
+  test('skicka inbjudan öppnar sms med länk och rätt e-post', { annotation: { type: 'testfall', description: 'TC-TEAM-07' } }, async ({ idag: page }) => {
+    await page.locator('#btn-team').click();
+    const kalle = page.locator('.member').filter({ hasText: 'Kalle Lind' }).getByRole('link', { name: 'Skicka inbjudan' });
+    const href = decodeURIComponent(await kalle.getAttribute('href'));
+    expect(href.startsWith('sms:0700000002?&body=')).toBe(true);
+    expect(href).toContain('Hej Kalle! Du är tillagd i Sundsvalls El AB i Elkoll');
+    expect(href).toContain('http://127.0.0.1:4173/');
+    expect(href).toContain('använd e-posten kalle@elkoll.se');
+    expect(href).toContain('/Dennis');
+    await expect(page.locator('.member').filter({ hasText: '(du)' }).getByRole('link', { name: 'Skicka inbjudan' })).toHaveCount(0);
   });
 });

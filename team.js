@@ -51,6 +51,19 @@ window.ElkollTeam = (function () {
     }
   }
 
+  const IKON_SMS = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+
+  // sms-länk med färdig inbjudan: appens adress och e-posten kollegan ska använda
+  function inbjudan(m) {
+    const url = location.origin + location.pathname.replace(/index\.html$/, '');
+    const fornamn = (m.namn || '').split(' ')[0];
+    const fran = state.jag ? ' /' + state.jag.namn.split(' ')[0] : '';
+    const text = 'Hej ' + fornamn + '! Du är tillagd i ' + (state.team ? state.team.namn : 'teamet') + ' i Elkoll, vår app för uppdrag. ' +
+      'Öppna ' + url + ' i Safari, tryck "Ny här? Skapa konto" och använd e-posten ' + m.epost + '. ' +
+      'Lägg sedan appen på hemskärmen via Dela → Lägg till på hemskärmen.' + fran;
+    return 'sms:' + U.telLank(m.telefon) + '?&body=' + encodeURIComponent(text);
+  }
+
   function render() {
     $('team-namn-visning').textContent = state.team ? state.team.namn : '';
     $('medlemmar').innerHTML = state.medlemmar.map((m) => {
@@ -60,7 +73,9 @@ window.ElkollTeam = (function () {
         '<span class="avatar ' + (jag ? '' : 'light') + '" aria-hidden="true">' + esc(U.initialer(m.namn)) + '</span>' +
         '<span class="member-text"><strong>' + esc(m.namn) + (jag ? ' (du)' : '') + '</strong>' +
         '<span class="muted small">' + esc(m.telefon || 'Inget nummer') + '</span>' +
-        '<span class="muted small">' + esc(m.epost) + '</span></span>' +
+        '<span class="muted small">' + esc(m.epost) + '</span>' +
+        (jag ? '' : '<a class="invite" href="' + esc(inbjudan(m)) + '">' + IKON_SMS + 'Skicka inbjudan</a>') +
+        '</span>' +
         (tel && !jag ? '<a class="icon-btn dark" href="tel:' + esc(tel) + '" aria-label="Ring ' + esc(m.namn) + '">' + IKON_RING + '</a>' : '') +
         (jag ? '' : '<button class="icon-btn" type="button" data-ta-bort="' + esc(m.id) + '" aria-label="Ta bort ' + esc(m.namn) + '">' + IKON_SOPOR + '</button>') +
         '</li>';
@@ -112,7 +127,7 @@ window.ElkollTeam = (function () {
     const { error } = await sb.from('elkoll_medlem').insert({ team_id: state.team.id, namn, telefon: telefon || null, epost });
     if (error) { msg('medlem-msg', felText(error), 'error'); return; }
     $('form-medlem').reset();
-    msg('medlem-msg', namn + ' är tillagd.', 'ok');
+    msg('medlem-msg', namn + ' är tillagd. Tryck Skicka inbjudan för att meddela hen.', 'ok');
     await load(email);
     onChange();
   }

@@ -7,6 +7,8 @@ const ROOT = path.join(__dirname, '..');
 const SUPABASE = 'https://sjdznlmnvubqscftdkoj.supabase.co';
 const STORAGE_KEY = 'sb-sjdznlmnvubqscftdkoj-auth-token';
 const FOTO = fs.readFileSync(path.join(__dirname, 'data', 'foto.jpg'));
+const TILE = fs.readFileSync(path.join(__dirname, 'data', 'tile.png'));
+const TILE_HOSTS = /tile\.openstreetmap\.org|opentopomap\.org|arcgisonline\.com/;
 
 const ANVANDARE = {
   id: '11111111-2222-3333-4444-555555555555',
@@ -48,9 +50,9 @@ function exempelData() {
       { id: M.maria, team_id: TEAM, namn: 'Maria Sjö', telefon: '070-000 00 03', epost: 'maria@elkoll.se' }
     ],
     elkoll_uppdrag: [
-      { id: 'u1', team_id: TEAM, fran: M.kalle, tilldelad: M.dennis, datum: dag(0), tid: '07:30', adress: 'Storgatan 12, Sundsvall', kund: 'Anna Lindqvist', telefon: '070-123 45 67', portkod: '1234', uppgift: 'Byta elcentral', material: ['Elcentral 12 moduler', 'Jordfelsbrytare × 2'], saknas: [], fritext: 'Idag halv åtta Storgatan 12, byta elcentral hos Anna.', status: 'planerad', kommentar: null },
-      { id: 'u2', team_id: TEAM, fran: M.kalle, tilldelad: M.dennis, datum: dag(0), tid: '13:30', adress: 'Södra vägen 21, Sundsvall', kund: 'Erik', telefon: null, portkod: null, uppgift: 'Montera 4 uttag i garage', material: [], saknas: ['portkod', 'telefon'], fritext: null, status: 'planerad', kommentar: null },
-      { id: 'u3', team_id: TEAM, fran: M.dennis, tilldelad: M.maria, datum: dag(0), tid: '10:00', adress: 'Bergsgatan 4, Sundsvall', kund: 'Bo', telefon: '070-555 55 55', portkod: null, uppgift: 'Felsöka jordfel i kök', material: [], saknas: [], fritext: null, status: 'planerad', kommentar: null },
+      { id: 'u1', team_id: TEAM, fran: M.kalle, tilldelad: M.dennis, datum: dag(0), tid: '07:30', adress: 'Storgatan 12, Sundsvall', kund: 'Anna Lindqvist', telefon: '070-123 45 67', portkod: '1234', lat: 62.3908, lon: 17.3069, uppgift: 'Byta elcentral', material: ['Elcentral 12 moduler', 'Jordfelsbrytare × 2'], saknas: [], fritext: 'Idag halv åtta Storgatan 12, byta elcentral hos Anna.', status: 'planerad', kommentar: null },
+      { id: 'u2', team_id: TEAM, fran: M.kalle, tilldelad: M.dennis, datum: dag(0), tid: '13:30', adress: 'Södra vägen 21, Sundsvall', kund: 'Erik', telefon: null, portkod: null, lat: 62.3850, lon: 17.3200, uppgift: 'Montera 4 uttag i garage', material: [], saknas: ['portkod', 'telefon'], fritext: null, status: 'planerad', kommentar: null },
+      { id: 'u3', team_id: TEAM, fran: M.dennis, tilldelad: M.maria, datum: dag(0), tid: '10:00', adress: 'Bergsgatan 4, Sundsvall', kund: 'Bo', telefon: '070-555 55 55', portkod: null, lat: 62.3950, lon: 17.2950, uppgift: 'Felsöka jordfel i kök', material: [], saknas: [], fritext: null, status: 'planerad', kommentar: null },
       { id: 'u4', team_id: TEAM, fran: M.kalle, tilldelad: M.dennis, datum: dag(1), tid: '08:00', adress: 'Kyrkogatan 3, Sundsvall', kund: null, telefon: null, portkod: null, uppgift: 'Byta armatur i trapphus', material: [], saknas: [], fritext: null, status: 'planerad', kommentar: null }
     ],
     elkoll_foto: []
@@ -59,7 +61,7 @@ function exempelData() {
 
 const TOLKNING = {
   datum: dag(1), tid: '07:30', adress: 'Storgatan 12, Sundsvall', kund: 'Anna Lindqvist', telefon: '070-123 45 67',
-  portkod: '', uppgift: 'Byta elcentral', material: ['Elcentral 12 moduler', 'Jordfelsbrytare × 2'], saknas: ['portkod']
+  portkod: '', lat: 62.3908, lon: 17.3069, uppgift: 'Byta elcentral', material: ['Elcentral 12 moduler', 'Jordfelsbrytare × 2'], saknas: ['portkod']
 };
 
 // PostgREST-filter: ?kolumn=eq.värde / gte.värde
@@ -76,7 +78,26 @@ function filtrera(rows, params) {
 }
 
 async function mocka(page, { data = exempelData(), tolkning = TOLKNING } = {}) {
-  const api = { db: data, tolkning, tolkStatus: 200, tolkFordrojning: 0, tolkAnrop: [], anrop: [], nere: false, signup: null, uppladdade: [], borttagnaFoton: [] };
+  const api = { db: data, tolkning, tolkStatus: 200, tolkFordrojning: 0, tolkAnrop: [], anrop: [], nere: false, signup: null, uppladdade: [], borttagnaFoton: [], geoAnrop: [],
+    // Adress (gemener) → koordinater. Saknas adressen svarar "Nominatim" med en standardplats.
+    geo: { 'okänd väg 99': null } };
+
+  await page.route(/cdnjs\.cloudflare\.com/, (route) => {
+    const url = route.request().url();
+    const img = url.match(/leaflet\/[\d.]+\/images\/(.+\.png)/);
+    if (img) return route.fulfill({ path: path.join(ROOT, 'node_modules/leaflet/dist/images', img[1]), contentType: 'image/png' });
+    if (/leaflet\.min\.js/.test(url)) return route.fulfill({ path: path.join(ROOT, 'node_modules/leaflet/dist/leaflet.js'), contentType: 'application/javascript' });
+    if (/leaflet\.min\.css/.test(url)) return route.fulfill({ path: path.join(ROOT, 'node_modules/leaflet/dist/leaflet.css'), contentType: 'text/css' });
+    return route.abort();
+  });
+  await page.route(TILE_HOSTS, (route) => route.fulfill({ body: TILE, contentType: 'image/png' }));
+  await page.route(/nominatim\.openstreetmap\.org/, (route) => {
+    const q = (new URL(route.request().url()).searchParams.get('q') || '').toLowerCase();
+    api.geoAnrop.push(q);
+    if (api.nere) return route.abort('internetdisconnected');
+    const hit = q in api.geo ? api.geo[q] : { lat: 62.40, lon: 17.30 };
+    return route.fulfill({ json: hit ? [{ lat: String(hit.lat), lon: String(hit.lon), display_name: q }] : [], headers: cors() });
+  });
 
   await page.route(/cdn\.jsdelivr\.net/, (route) => {
     if (/supabase-js/.test(route.request().url())) {

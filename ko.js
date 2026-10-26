@@ -63,7 +63,15 @@ window.ElkollKo = (function () {
             }
           } else if (item.op === 'delete') res = await sb.from('elkoll_uppdrag').delete().eq('id', item.id);
           // upsert: samma uppdrag kan skickas igen utan dubbletter om förra försöket bröts
-          else res = await sb.from('elkoll_uppdrag').upsert(item.row, { onConflict: 'id' });
+          else {
+            res = await sb.from('elkoll_uppdrag').upsert(item.row, { onConflict: 'id' });
+            // Om schema.sql inte körts än saknas kolumnerna lat/lon – spara utan plats hellre än inte alls
+            if (res.error && /'(lat|lon)' column|column .*(lat|lon)/i.test(res.error.message || '')) {
+              const utan = Object.assign({}, item.row);
+              delete utan.lat; delete utan.lon;
+              res = await sb.from('elkoll_uppdrag').upsert(utan, { onConflict: 'id' });
+            }
+          }
           if (res.error) throw res.error;
           await del(item.id);
           sent++;

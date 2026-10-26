@@ -20,6 +20,8 @@ module.exports = defineConfig({
     baseURL: 'http://127.0.0.1:4173/',
     locale: 'sv-SE',
     timezoneId: 'Europe/Stockholm',
+    geolocation: { latitude: 62.3925, longitude: 17.3060 },   // Sundsvall
+    permissions: ['geolocation'],
     serviceWorkers: 'block',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',

@@ -1,5 +1,5 @@
 // Höj versionen vid varje deploy så att telefonen hämtar nya filer.
-const CACHE = 'elkoll-v7';
+const CACHE = 'elkoll-v8';
 
 const SHELL = [
   './',
@@ -9,6 +9,7 @@ const SHELL = [
   './util.js',
   './ko.js',
   './team.js',
+  './karta.js',
   './foto.js',
   './uppdrag.js',
   './app.js',
@@ -20,7 +21,18 @@ const SHELL = [
 ];
 
 // Bibliotek och typsnitt: cache först (låsta versioner ändras inte)
-const CDN_HOSTS = ['cdn.jsdelivr.net', 'fonts.googleapis.com', 'fonts.gstatic.com'];
+const CDN_HOSTS = ['cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'fonts.googleapis.com', 'fonts.gstatic.com'];
+
+// Kartrutor i egen cache så att kartan fungerar med dålig täckning
+const TILE_CACHE = 'elkoll-tiles';
+const TILE_MAX = 1500;
+const TILE_HOSTS = ['tile.openstreetmap.org', 'tile.opentopomap.org', 'server.arcgisonline.com'];
+const isTile = (host) => TILE_HOSTS.some((h) => host === h || host.endsWith('.' + h));
+async function trimTiles() {
+  const c = await caches.open(TILE_CACHE);
+  const keys = await c.keys();
+  for (let i = 0; i < keys.length - TILE_MAX; i++) await c.delete(keys[i]);
+}
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)));
@@ -30,7 +42,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k !== TILE_CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
@@ -46,6 +58,16 @@ self.addEventListener('fetch', (event) => {
         if (res.ok || res.type === 'opaque') caches.open(CACHE).then((c) => c.put(req, res.clone()));
         return res;
       }))
+    );
+    return;
+  }
+
+  if (isTile(url.hostname)) {
+    event.respondWith(
+      caches.open(TILE_CACHE).then((c) => c.match(req).then((hit) => hit || fetch(req).then((res) => {
+        if (res.ok || res.type === 'opaque') { c.put(req, res.clone()); trimTiles(); }
+        return res;
+      })))
     );
     return;
   }

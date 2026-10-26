@@ -52,6 +52,10 @@ create table if not exists public.elkoll_uppdrag (
   updated_at  timestamptz not null default now()
 );
 
+-- Plats på kartan (steg 4). Slås upp från adressen när uppdraget sparas.
+alter table public.elkoll_uppdrag add column if not exists lat double precision;
+alter table public.elkoll_uppdrag add column if not exists lon double precision;
+
 create index if not exists elkoll_medlem_epost   on public.elkoll_medlem (epost);
 create index if not exists elkoll_uppdrag_team_d on public.elkoll_uppdrag (team_id, datum);
 

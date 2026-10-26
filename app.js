@@ -33,7 +33,7 @@
     ['loading', 'login', 'app'].forEach((v) => { $('view-' + v).hidden = v !== view; });
   }
   function screen(name) {
-    ['start', 'idag', 'nytt', 'uppdrag', 'team'].forEach((s) => { $('screen-' + s).hidden = s !== name; });
+    ['start', 'idag', 'nytt', 'uppdrag', 'team', 'karta'].forEach((s) => { $('screen-' + s).hidden = s !== name; });
     window.scrollTo(0, 0);
   }
   function setMsg(text, kind) {
@@ -145,9 +145,11 @@
     const [vy, id] = (location.hash.replace(/^#/, '') || 'idag').split('/');
     const rid = id ? decodeURIComponent(id) : null;
     if (vy !== 'uppdrag') window.ElkollFoto.lamna();
+    if (vy !== 'karta') window.ElkollKarta.lamna();
     if (vy === 'nytt') { window.ElkollUppdrag.openNytt(rid); screen('nytt'); }
     else if (vy === 'uppdrag' && rid) { window.ElkollUppdrag.openKort(rid); screen('uppdrag'); }
     else if (vy === 'team') { window.ElkollTeam.render(); screen('team'); }
+    else if (vy === 'karta') { screen('karta'); window.ElkollUppdrag.visaKarta(); }
     else { window.ElkollUppdrag.render(); screen('idag'); }
   }
   window.addEventListener('hashchange', route);

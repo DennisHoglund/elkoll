@@ -5,9 +5,9 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 
 | | |
 |---|---|
-| **Testfall** | 39 |
-| **Automatiserade** | 34 (körs på iPhone/WebKit och Android/Chromium) |
-| **Manuella** | 5 (kräver riktig iPhone eller riktig backend) |
+| **Testfall** | 45 |
+| **Automatiserade** | 39 (körs på iPhone/WebKit och Android/Chromium) |
+| **Manuella** | 6 (kräver riktig iPhone eller riktig backend) |
 | **Senaste testrapport** | [dennishoglund.github.io/elkoll/rapport/](https://dennishoglund.github.io/elkoll/rapport/) |
 | **Krav** | [SPEC.md](../SPEC.md) |
 
@@ -55,6 +55,17 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 | [TC-UPP-12](testfall/TC-UPP-12.md) | [Diktera med tangentbordet](testfall/TC-UPP-12.md) | Hög | 🖐️ |
 | [TC-UPP-13](testfall/TC-UPP-13.md) | [Riktig tolkning med Gemini](testfall/TC-UPP-13.md) | Hög | 🖐️ |
 | [TC-UPP-14](testfall/TC-UPP-14.md) | [Tolkningen hänger aldrig](testfall/TC-UPP-14.md) | Hög | 🤖 |
+
+## Karta
+
+| ID | Testfall | Prio | Typ |
+|---|---|---|---|
+| [TC-KAR-01](testfall/TC-KAR-01.md) | [Dagens uppdrag på kartan](testfall/TC-KAR-01.md) | Hög | 🤖 |
+| [TC-KAR-02](testfall/TC-KAR-02.md) | [Mina/Alla och byta dag på kartan](testfall/TC-KAR-02.md) | Hög | 🤖 |
+| [TC-KAR-03](testfall/TC-KAR-03.md) | [Tryck på nål](testfall/TC-KAR-03.md) | Hög | 🤖 |
+| [TC-KAR-04](testfall/TC-KAR-04.md) | [Nytt uppdrag får plats](testfall/TC-KAR-04.md) | Hög | 🤖 |
+| [TC-KAR-05](testfall/TC-KAR-05.md) | [Adress som inte hittas](testfall/TC-KAR-05.md) | Medel | 🤖 |
+| [TC-KAR-06](testfall/TC-KAR-06.md) | [Egen position på riktig iPhone](testfall/TC-KAR-06.md) | Medel | 🖐️ |
 
 ## Dokumentation
 

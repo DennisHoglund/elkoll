@@ -44,6 +44,10 @@ window.ElkollUppdrag = (function () {
       if (b) { till = b.getAttribute('data-till') || null; renderTill(); }
     });
     FALT.forEach((f) => $('u-' + f).addEventListener('input', () => markeraSaknas()));
+    $('karta-prev').addEventListener('click', () => { valdDag = U.plusDagar(valdDag, -1); uppdatera(); });
+    $('karta-next').addEventListener('click', () => { valdDag = U.plusDagar(valdDag, 1); uppdatera(); });
+    $('karta-mina').addEventListener('click', () => satFilter('mina'));
+    $('karta-alla').addEventListener('click', () => satFilter('alla'));
     $('kort').addEventListener('click', klickKort);
     satFilter(filter, true);
   }
@@ -53,9 +57,47 @@ window.ElkollUppdrag = (function () {
   function satFilter(f, tyst) {
     filter = f;
     U.store.set(FILTER_KEY, f);
-    $('filter-mina').setAttribute('aria-pressed', String(f === 'mina'));
-    $('filter-alla').setAttribute('aria-pressed', String(f === 'alla'));
-    if (!tyst) render();
+    ['filter', 'karta'].forEach((p) => {
+      $(p + '-mina').setAttribute('aria-pressed', String(f === 'mina'));
+      $(p + '-alla').setAttribute('aria-pressed', String(f === 'alla'));
+    });
+    if (!tyst) uppdatera();
+  }
+
+  // Ritar om listan, och kartan om den visas
+  function uppdatera() {
+    render();
+    if (!$('screen-karta').hidden) visaKarta();
+  }
+
+  // ---------- Karta ----------
+  function visaKarta() {
+    $('karta-dag').textContent = valdDag === U.isoDag() ? 'Idag' : U.kortDag(valdDag);
+    const dagens = sorterade(synliga().filter((r) => r.datum === valdDag));
+    window.ElkollKarta.visa(dagens, valdDag + filter);
+    geokodaSaknade(dagens);
+  }
+
+  // Uppdrag utan koordinater (t.ex. sparade utan täckning) får plats när kartan visas
+  let geoPagar = false;
+  const geoMiss = new Set();
+  async function geokodaSaknade(dagens) {
+    if (geoPagar || !navigator.onLine) return;
+    const saknar = dagens.filter((r) => r.lat == null && r.adress && !geoMiss.has(r.adress));
+    if (!saknar.length) return;
+    geoPagar = true;
+    let andrat = false;
+    for (const r of saknar) {
+      const g = await window.ElkollKarta.geokoda(r.adress);
+      if (g) {
+        const row = Object.assign({}, r, { lat: g.lat, lon: g.lon });
+        delete row._vantar;
+        await sparaRad(row, 'upsert', true);
+        andrat = true;
+      } else if (g === null) geoMiss.add(r.adress);
+    }
+    geoPagar = false;
+    if (andrat && !$('screen-karta').hidden) visaKarta();
   }
 
   // ---------- Hämta ----------
@@ -273,13 +315,19 @@ window.ElkollUppdrag = (function () {
       kommentar: redigerar ? (redigerar.kommentar || null) : null,
       updated_at: new Date().toISOString()
     };
+    // Plats på kartan: behåll gamla koordinater om adressen inte ändrats, annars slå upp (max 4 s)
+    if (redigerar && redigerar.adress === adress && redigerar.lat != null) { row.lat = redigerar.lat; row.lon = redigerar.lon; }
+    else if (navigator.onLine) {
+      const g = await Promise.race([window.ElkollKarta.geokoda(adress), new Promise((r) => setTimeout(() => r(undefined), 4000))]);
+      if (g) { row.lat = g.lat; row.lon = g.lon; }
+    }
     await sparaRad(row);
     valdDag = datum;
     location.hash = '#idag';
   }
 
   // Spara lokalt först, skicka sedan
-  async function sparaRad(row, op) {
+  async function sparaRad(row, op, tyst) {
     await window.ElkollKo.put({ id: row.id, userId, op: op || 'upsert', row, created: Date.now() });
     const i = lista.findIndex((x) => x.id === row.id);
     if (op === 'delete') { if (i >= 0) lista.splice(i, 1); }
@@ -287,6 +335,7 @@ window.ElkollUppdrag = (function () {
     else lista.push(Object.assign({}, row, { _vantar: true }));
     render();
     const res = await synka();
+    if (tyst) return;
     if (res && res.left) U.toast('Sparat i telefonen – skickas när du har täckning', 'ok', 3500);
     else U.toast(op === 'delete' ? 'Uppdraget är borttaget' : 'Sparat', 'ok', 2000);
   }
@@ -402,5 +451,5 @@ window.ElkollUppdrag = (function () {
     }
   }
 
-  return { setup, setUser, load, render, openNytt, openKort, get lista() { return lista; } };
+  return { setup, setUser, load, render, openNytt, openKort, visaKarta, get lista() { return lista; } };
 })();

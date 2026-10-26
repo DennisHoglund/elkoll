@@ -258,3 +258,49 @@ p { margin: 0; }
   -webkit-appearance: none; appearance: none; display: block; min-width: 0; max-width: 100%; text-align: left;
 }
 .form input::-webkit-date-and-time-value { text-align: left; margin: 0; }
+
+/* ---------- Karta ---------- */
+.icon-btn.round { width: 44px; height: 44px; border-radius: 22px; color: var(--text); text-decoration: none; }
+.karta-screen { position: fixed; inset: 0; }
+#karta { position: absolute; inset: 0; background: var(--yta2); }
+.karta-top {
+  position: absolute; z-index: 500; top: calc(10px + env(safe-area-inset-top)); left: 10px; right: 60px;
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+}
+.pill {
+  display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 12px; border-radius: 22px;
+  background: var(--yta); color: var(--text); box-shadow: var(--skugga); text-decoration: none; font-weight: 700; font-size: 15px;
+}
+.dagval { padding: 0 4px; gap: 2px; }
+.dagval button { width: 40px; height: 40px; border: none; background: none; color: var(--text); display: inline-flex; align-items: center; justify-content: center; border-radius: 20px; cursor: pointer; }
+.dagval span { min-width: 84px; text-align: center; }
+.pillseg { background: var(--yta); border-radius: 22px; padding: 3px; gap: 3px; box-shadow: var(--skugga); }
+.pillseg button { min-height: 38px; border: none; border-radius: 19px; padding: 0 14px; flex: none; }
+.karta-msg {
+  position: absolute; z-index: 500; left: 10px; right: 10px; top: calc(118px + env(safe-area-inset-top));
+  padding: 10px 14px; border-radius: 12px; background: var(--warn-bg); color: var(--warn); font-size: 14px; font-weight: 600; box-shadow: var(--skugga);
+}
+.fab {
+  position: absolute; z-index: 500; right: 12px; bottom: calc(24px + env(safe-area-inset-bottom));
+  width: 52px; height: 52px; border-radius: 26px; border: none; background: var(--yta); color: var(--text); box-shadow: var(--skugga);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.karta-kort {
+  position: absolute; z-index: 600; left: 10px; right: 10px; bottom: calc(12px + env(safe-area-inset-bottom));
+  background: var(--yta); border-radius: 20px; padding: 16px; box-shadow: 0 -2px 18px rgba(0,0,0,.18); display: flex; flex-direction: column; gap: 12px;
+}
+.karta-kort:not([hidden]) ~ .fab, .karta-screen:has(.karta-kort:not([hidden])) .fab { display: none; }
+.kk-rad { display: flex; gap: 12px; align-items: flex-start; }
+.kk-text { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kk-titel { font-size: 18px; }
+.pin-wrap { background: none; border: none; }
+.pin {
+  width: 40px; height: 40px; border-radius: 20px; background: var(--accent); color: var(--on-accent); border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; box-sizing: border-box;
+}
+.pin.done { background: #9AA0A6; color: #17191C; }
+.pin.vald { transform: scale(1.2); background: var(--mork); color: var(--on-mork); }
+.pos-dot { fill: #1C64F2; fill-opacity: 1; stroke: #fff; stroke-width: 3; }
+:root[data-theme="dark"] #karta:not(.sat) .leaflet-tile-pane { filter: brightness(.75) contrast(1.1); }
+@media (prefers-color-scheme: dark) { :root[data-theme="auto"] #karta:not(.sat) .leaflet-tile-pane { filter: brightness(.75) contrast(1.1); } }
+.leaflet-top.leaflet-right { top: env(safe-area-inset-top); }

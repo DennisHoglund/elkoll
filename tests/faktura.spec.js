@@ -70,4 +70,37 @@ test.describe('Fakturering', () => {
     await page.goto('./#uppdrag/u1');
     await expect(page.locator('.fak-badge')).toHaveText(/^Fakturerad /);
   });
+
+  test('exportera underlag som CSV för en period', { annotation: { type: 'testfall', description: 'TC-FAK-05' } }, async ({ page, api }) => {
+    forbered(api);
+    api.db.elkoll_uppdrag.find((u) => u.id === 'u1').kommentar = 'Bytt central; kabel i hallen "bör" ses över';
+    await oppna(page);
+    await page.getByText('Exportera underlag (CSV)').click();
+    await expect(page.locator('#exp-fran')).toHaveValue(dag(0).slice(0, 8) + '01');
+    const [nedladdning] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Exportera' }).click()]);
+    expect(nedladdning.suggestedFilename()).toMatch(/^elkoll-underlag-\d{4}-\d{2}-01_\d{4}-\d{2}-\d{2}\.csv$/);
+    const text = require('fs').readFileSync(await nedladdning.path(), 'utf8');
+    const rader = text.replace(/^\ufeff/, '').trim().split('\r\n');
+    expect(rader[0]).toBe('Datum;Kund;Adress;Uppdrag;Fakturastatus;Timmar totalt;Timmar Dennis Höglund;Timmar Kalle Lind;Timmar Maria Sjö;Material;Anteckning;Fakturerad;Uppdrags-id');
+    expect(rader).toHaveLength(3);
+    const anna = rader.find((r) => r.includes('Anna Lindqvist'));
+    expect(anna).toContain(';Byta elcentral;Att fakturera;2,25;1,50;;0,75;Elcentral 12 moduler, Jordfelsbrytare × 2;"Bytt central; kabel i hallen ""bör"" ses över";;u1');
+    await expect(page.locator('#exp-msg')).toHaveText('2 uppdrag, 4 h 15 min exporterade.');
+  });
+
+  test('export med bara ej fakturerade', { annotation: { type: 'testfall', description: 'TC-FAK-06' } }, async ({ page, api }) => {
+    forbered(api);
+    api.db.elkoll_uppdrag.find((u) => u.id === 'u3').fakturerad_at = new Date().toISOString();
+    await oppna(page);
+    await page.getByText('Exportera underlag (CSV)').click();
+    await page.getByLabel('Bara ej fakturerade').check();
+    const [nedladdning] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Exportera' }).click()]);
+    const text = require('fs').readFileSync(await nedladdning.path(), 'utf8');
+    expect(text).toContain('Byta elcentral');
+    expect(text).not.toContain('Felsöka jordfel');
+    await page.locator('#exp-fran').fill('2020-01-01');
+    await page.locator('#exp-till').fill('2020-01-31');
+    await page.getByRole('button', { name: 'Exportera' }).click();
+    await expect(page.locator('#exp-msg')).toHaveText('Inga klara uppdrag i perioden.');
+  });
 });

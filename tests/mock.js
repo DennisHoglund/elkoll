@@ -76,6 +76,7 @@ function filtrera(rows, params) {
     if (op === 'gte') ut = ut.filter((r) => String(r[k]) >= val);
     if (op === 'neq') ut = ut.filter((r) => String(r[k]) !== val);
     if (op === 'lt') ut = ut.filter((r) => String(r[k]) < val);
+    if (op === 'lte') ut = ut.filter((r) => String(r[k]) <= val);
     if (op === 'in') {
       const varden = val.replace(/^\(|\)$/g, '').split(',').map((x) => x.replace(/^"|"$/g, ''));
       ut = ut.filter((r) => varden.includes(String(r[k])));

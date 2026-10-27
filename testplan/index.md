@@ -5,9 +5,9 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 
 | | |
 |---|---|
-| **Testfall** | 67 |
-| **Automatiserade** | 60 (körs på iPhone/WebKit och Android/Chromium) |
-| **Manuella** | 7 (kräver riktig iPhone eller riktig backend) |
+| **Testfall** | 70 |
+| **Automatiserade** | 62 (körs på iPhone/WebKit och Android/Chromium) |
+| **Manuella** | 8 (kräver riktig iPhone eller riktig backend) |
 | **Senaste testrapport** | [dennishoglund.github.io/elkoll/rapport/](https://dennishoglund.github.io/elkoll/rapport/) |
 | **Krav** | [SPEC.md](../SPEC.md) |
 
@@ -86,6 +86,9 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 | [TC-FAK-02](testfall/TC-FAK-02.md) | [Markera fakturerad](testfall/TC-FAK-02.md) | Hög | 🤖 |
 | [TC-FAK-03](testfall/TC-FAK-03.md) | [Debiteras inte](testfall/TC-FAK-03.md) | Medel | 🤖 |
 | [TC-FAK-04](testfall/TC-FAK-04.md) | [Fakturerad syns på uppdraget](testfall/TC-FAK-04.md) | Låg | 🤖 |
+| [TC-FAK-05](testfall/TC-FAK-05.md) | [Exportera CSV](testfall/TC-FAK-05.md) | Hög | 🤖 |
+| [TC-FAK-06](testfall/TC-FAK-06.md) | [Exportera bara ej fakturerade](testfall/TC-FAK-06.md) | Medel | 🤖 |
+| [TC-FAK-07](testfall/TC-FAK-07.md) | [Dela-menyn på iPhone](testfall/TC-FAK-07.md) | Hög | 🖐️ |
 
 ## Kundregister
 

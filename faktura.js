@@ -18,6 +18,104 @@ window.ElkollFaktura = (function () {
     $('fak-att').addEventListener('click', () => satFlik('att'));
     $('fak-klara').addEventListener('click', () => satFlik('fakturerade'));
     $('fak-lista').addEventListener('click', klick);
+    document.querySelectorAll('#fak-export [data-period]').forEach((b) => b.addEventListener('click', () => satPeriod(b.getAttribute('data-period'))));
+    $('btn-exportera').addEventListener('click', exportera);
+    satPeriod('manad');
+  }
+
+  // ---------- Export till CSV ----------
+  function satPeriod(p) {
+    const idag = U.isoDag();
+    const forsta = idag.slice(0, 8) + '01';
+    let fran = forsta, till = idag;
+    if (p === 'forra') {
+      const [y, m] = forsta.split('-').map(Number);
+      const d = new Date(y, m - 2, 1, 12);
+      fran = U.isoDag(d);
+      till = U.plusDagar(forsta, -1);
+    }
+    $('exp-fran').value = fran;
+    $('exp-till').value = till;
+    document.querySelectorAll('#fak-export [data-period]').forEach((b) => b.setAttribute('aria-pressed', String(b.getAttribute('data-period') === p)));
+  }
+
+  // Svensk Excel: semikolon som avgränsare, decimalkomma och BOM så att å/ä/ö blir rätt
+  const cell = (v) => {
+    const s = String(v == null ? '' : v);
+    return /[;"\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  };
+  const timmar = (min) => (min / 60).toFixed(2).replace('.', ',');
+
+  async function exportera() {
+    const fran = $('exp-fran').value, till = $('exp-till').value;
+    const baraEj = $('exp-bara-ej').checked;
+    const msg = (t, k) => { $('exp-msg').textContent = t; $('exp-msg').className = 'msg' + (k ? ' ' + k : ''); };
+    if (!fran || !till || till < fran) { msg('Välj en period där Till är samma dag eller senare än Från.', 'error'); return; }
+    if (!navigator.onLine) { msg('Exporten kräver täckning.', 'error'); return; }
+    const team = T.state.team;
+    const btn = $('btn-exportera');
+    btn.disabled = true;
+    msg('Hämtar…');
+    try {
+      const ures = await sb.from('elkoll_uppdrag').select('*').eq('team_id', team.id).eq('status', 'klar')
+        .gte('datum', fran).lte('datum', till).order('datum');
+      if (ures.error) throw ures.error;
+      let rader = (ures.data || []).filter((r) => !baraEj || (r.debiteras !== false && !r.fakturerad_at));
+      if (!rader.length) { msg('Inga klara uppdrag i perioden.', 'error'); return; }
+      const tres = await sb.from('elkoll_tid').select('uppdrag_id, medlem_id, start, slut').eq('team_id', team.id).in('uppdrag_id', rader.map((r) => r.id));
+      if (tres.error) throw tres.error;
+      const allaTider = tres.data || [];
+
+      const personer = T.state.medlemmar.slice();
+      // Tid från borttagna medlemmar samlas i egen kolumn
+      const okand = allaTider.some((t) => !personer.some((p) => p.id === t.medlem_id));
+      const rubrik = ['Datum', 'Kund', 'Adress', 'Uppdrag', 'Fakturastatus', 'Timmar totalt']
+        .concat(personer.map((p) => 'Timmar ' + p.namn)).concat(okand ? ['Timmar övriga'] : [])
+        .concat(['Material', 'Anteckning', 'Fakturerad', 'Uppdrags-id']);
+      const linjer = [rubrik.map(cell).join(';')];
+      let totalMin = 0;
+      rader.forEach((r) => {
+        const tider = allaTider.filter((t) => t.uppdrag_id === r.id);
+        const per = (id) => tider.filter((t) => t.medlem_id === id).reduce((s, t) => s + minuter(t), 0);
+        const summa = tider.reduce((s, t) => s + minuter(t), 0);
+        totalMin += summa;
+        const status = r.debiteras === false ? 'Debiteras inte' : r.fakturerad_at ? 'Fakturerad' : 'Att fakturera';
+        const kol = [r.datum, r.kund || '', r.adress, r.uppgift, status, timmar(summa)]
+          .concat(personer.map((p) => { const m = per(p.id); return m ? timmar(m) : ''; }))
+          .concat(okand ? [timmar(tider.filter((t) => !personer.some((p) => p.id === t.medlem_id)).reduce((s, t) => s + minuter(t), 0))] : [])
+          .concat([(r.material || []).join(', '), r.kommentar || '', r.fakturerad_at ? U.isoDag(new Date(r.fakturerad_at)) : '', r.id]);
+        linjer.push(kol.map(cell).join(';'));
+      });
+      const csv = '\ufeff' + linjer.join('\r\n') + '\r\n';
+      const namn = 'elkoll-underlag-' + fran + '_' + till + '.csv';
+      await dela(csv, namn);
+      msg(rader.length + (rader.length === 1 ? ' uppdrag' : ' uppdrag') + ', ' + langd(totalMin) + ' exporterade.', 'ok');
+    } catch (e) {
+      msg(U.isNetworkError(e) ? 'Ingen kontakt med servern. Försök igen.' : 'Exporten misslyckades: ' + (e.message || 'okänt fel'), 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  // Dela-menyn på telefonen (Mail, Filer, AirDrop), annars nedladdning
+  async function dela(text, namn) {
+    const fil = new File([text], namn, { type: 'text/csv' });
+    if (navigator.canShare && navigator.canShare({ files: [fil] })) {
+      try {
+        await navigator.share({ files: [fil], title: namn });
+        return;
+      } catch (e) {
+        if (e && e.name === 'AbortError') return;   // användaren stängde Dela-menyn
+      }
+    }
+    const url = URL.createObjectURL(fil);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = namn;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
   }
 
   function satFlik(f) {

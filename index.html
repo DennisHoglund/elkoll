@@ -213,6 +213,28 @@
           <button type="button" id="fak-klara" aria-pressed="false">Fakturerade</button>
         </div>
       </div>
+      <div class="pad" style="margin-top: 14px">
+        <details class="card export" id="fak-export">
+          <summary>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+            <span>Exportera underlag (CSV)</span>
+          </summary>
+          <div class="form stack">
+            <div class="seg" role="group" aria-label="Period">
+              <button type="button" data-period="manad" aria-pressed="true">Denna månad</button>
+              <button type="button" data-period="forra" aria-pressed="false">Förra månaden</button>
+            </div>
+            <div class="grid2">
+              <div class="field"><label for="exp-fran">Från</label><input id="exp-fran" type="date"></div>
+              <div class="field"><label for="exp-till">Till</label><input id="exp-till" type="date"></div>
+            </div>
+            <label class="check"><input type="checkbox" id="exp-bara-ej"> Bara ej fakturerade</label>
+            <p id="exp-msg" class="msg" role="status" aria-live="polite"></p>
+            <button type="button" class="btn primary" id="btn-exportera">Exportera</button>
+            <p class="muted small">Filen öppnas i Dela-menyn: välj Mail, Spara i Filer eller AirDrop. Den kan läsas in i bokföringsprogrammet eller öppnas i Excel.</p>
+          </div>
+        </details>
+      </div>
       <div class="pad stack" id="fak-lista" aria-live="polite" style="margin-top: 14px"></div>
     </section>
 

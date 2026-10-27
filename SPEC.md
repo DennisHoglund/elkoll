@@ -47,7 +47,8 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 - Mer → **Fakturering** (bara ägare): flikarna *Att fakturera (N)* och *Fakturerade*. Klara uppdrag grupperade per kund (namn, annars adress) med tid totalt och per person, material, anteckningar och **Öppna**.
 - **Markera fakturerad** sätter `fakturerad_at`; **Ångra** nollställer. Uppdragskortet visar *Fakturerad {datum}*.
 - **Debiteras inte** (kryssruta under Status) sätter `debiteras = false` för garanti/internt arbete – sådana uppdrag hamnar aldrig under Att fakturera.
-- Elkoll gör inga fakturor eller priser; underlaget förs in i kundens bokföringsprogram. Export till fil och ev. Fortnox-koppling är nästa steg.
+- **Exportera underlag (CSV)**: period (Denna månad / Förra månaden / egna datum), ev. *Bara ej fakturerade*. En rad per klart uppdrag: datum, kund, adress, uppdrag, fakturastatus, timmar totalt och per person, material, anteckning, fakturerad, uppdrags-id. Semikolon, decimalkomma och BOM för svensk Excel. Öppnas i Dela-menyn (Mail, Filer, AirDrop) via Web Share, annars nedladdning.
+- Elkoll gör inga fakturor eller priser; underlaget förs in i kundens bokföringsprogram. Ev. Fortnox-koppling är nästa steg.
 
 ### 4.10 Tidrapport
 - På uppdragskortet: **Starta tid** / **Stoppa · 0:42** (klockan uppdateras), lista över pass (vem, när, längd) och totalt. Lägg till tid i efterhand (från–till, datum) och ta bort egna pass med två tryck.
@@ -93,7 +94,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 
 ## 7. Tester
 - Playwright, iPhone 14 (WebKit) och Pixel 7 (Chromium). Supabase, tolkningsfunktionen, CDN och typsnitt mockas i `tests/mock.js`.
-- Testplan i `testplan/` (67 testfall, 60 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
+- Testplan i `testplan/` (70 testfall, 62 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
 
 ## 8. Beslut
 - Inloggning med lösenord i stället för magisk länk – delat projekt utan egen SMTP.

@@ -422,3 +422,8 @@ button.invite { border: none; font: inherit; font-size: 14px; font-weight: 700; 
 /* ---------- Ej klart sedan tidigare ---------- */
 .lista-rubrik { font-size: 15px; font-weight: 800; margin: 6px 0 0; }
 .job.kvar .job-nr { background: var(--warn-bg); color: var(--warn); }
+
+/* ---------- Export ---------- */
+.export summary { display: flex; align-items: center; gap: 10px; min-height: 48px; font-weight: 700; cursor: pointer; list-style: none; }
+.export summary::-webkit-details-marker { display: none; }
+.export[open] summary { margin-bottom: 10px; }

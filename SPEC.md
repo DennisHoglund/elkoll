@@ -36,6 +36,11 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 - Navigera (Apple Kartor på iPhone, annars Google Maps), Ring kund, På väg-sms, Ring avsändaren.
 - Kunduppgifter, portkod i stor stil, avsändarens originaltext, materiallista att bocka av (sparas lokalt), status Planerad/Klar/Återbesök, Ändra, Ta bort (två tryck).
 
+### 4.9 Kundregister med autofyll
+- När man skriver minst 2 tecken i **Kund** eller **Adress** föreslås upp till 5 tidigare kunder/adresser (alla ord måste finnas i namn eller adress), sorterade på antal besök och senaste datum.
+- Ett tryck fyller i adress, kund, telefon och portkod. Kunder byggs av teamets uppdrag (namn + gata, senaste uppgifter vinner) – ingen egen tabell.
+- Historiken hämtas en gång per session (max 1000 uppdrag) och cachas för användning utan täckning.
+
 ### 4.8 Platsminne
 - På uppdragskortet: *Varit här förut: N besök* (eller *N andra besök på adressen* om de är kommande). Tryck för datum, uppgift, vem, status och anteckningar; tryck på ett besök för att öppna det.
 - Matchning: samma gata och nummer (delen före första kommatecknet, utan hänsyn till skiftläge och mellanslag). Står orten med i båda adresserna måste den stämma (postnummer ignoreras), så samma gatunamn i en annan ort räknas inte. Koordinater används inte – de kan vara fel för adresser utan ort.
@@ -68,7 +73,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 
 ## 7. Tester
 - Playwright, iPhone 14 (WebKit) och Pixel 7 (Chromium). Supabase, tolkningsfunktionen, CDN och typsnitt mockas i `tests/mock.js`.
-- Testplan i `testplan/` (49 testfall, 43 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
+- Testplan i `testplan/` (52 testfall, 46 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
 
 ## 8. Beslut
 - Inloggning med lösenord i stället för magisk länk – delat projekt utan egen SMTP.

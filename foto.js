@@ -21,10 +21,6 @@ window.ElkollFoto = (function () {
   function setup(client, opts) {
     sb = client;
     synka = opts.synka;
-    document.addEventListener('change', (e) => {
-      const input = e.target.closest('input[data-foto-typ]');
-      if (input) onFil(input);
-    });
     document.addEventListener('click', klick);
   }
   function setUser(id) { userId = id; }
@@ -71,6 +67,7 @@ window.ElkollFoto = (function () {
 
   // ---------- Visa ----------
   async function visa(uppdrag, el) {
+    if (!aktuellt || aktuellt.el !== el) senastHtml = '';
     aktuellt = { uppdrag, el };
     rader = U.store.json(CACHE + uppdrag.id, []);
     await slaIhop();
@@ -125,9 +122,16 @@ window.ElkollFoto = (function () {
       '</div></div>';
   }
 
+  // Ritar bara om när innehållet ändrats. Lyssnaren sitter direkt på varje filfält, så att ett foto
+  // inte tappas om listan ändå ritas om medan kameran är öppen (då kopplas fältet loss från sidan).
+  let senastHtml = '';
   function render() {
     if (!aktuellt || !aktuellt.el.isConnected) return;
-    aktuellt.el.innerHTML = grupp('fore', 'Före') + grupp('efter', 'Efter');
+    const html = grupp('fore', 'Före') + grupp('efter', 'Efter');
+    if (html === senastHtml && aktuellt.el.innerHTML) return;
+    senastHtml = html;
+    aktuellt.el.innerHTML = html;
+    aktuellt.el.querySelectorAll('input[data-foto-typ]').forEach((input) => input.addEventListener('change', () => onFil(input)));
   }
 
   // ---------- Lägga till ----------
@@ -136,6 +140,8 @@ window.ElkollFoto = (function () {
     const typ = input.getAttribute('data-foto-typ');
     input.value = '';
     if (!file || !aktuellt) return;
+    const u = aktuellt.uppdrag;
+    const el = aktuellt.el;
     U.toast('Förbereder foto…', 'ok', 1500);
     let blob;
     try { blob = await shrink(file); } catch (e) {
@@ -143,17 +149,18 @@ window.ElkollFoto = (function () {
       U.toast('Kunde inte läsa fotot – prova ett annat', 'error', 4000);
       return;
     }
-    const u = aktuellt.uppdrag;
     const id = U.uuid();
     const row = { id, uppdrag_id: u.id, team_id: u.team_id, typ, path: u.team_id + '/' + u.id + '/' + id + '.jpg' };
     const data = await blob.arrayBuffer();   // ArrayBuffer – Safari klarar inte Blob i IndexedDB överallt
     await window.ElkollKo.put({ id, userId, op: 'foto', row, data, created: Date.now() });
     urls.set(row.path, URL.createObjectURL(blob));
-    rader.push(Object.assign({}, row, { _vantar: true }));
-    render();
+    if (aktuellt && aktuellt.uppdrag.id === u.id) { rader.push(Object.assign({}, row, { _vantar: true })); render(); }
     const res = await synka();
     if (res && res.left) U.toast('Fotot är sparat i telefonen – laddas upp när du har täckning', 'ok', 3500);
-    else { U.toast('Fotot är sparat', 'ok', 2000); await visa(u, aktuellt.el); }
+    else {
+      U.toast('Fotot är sparat', 'ok', 2000);
+      if (aktuellt && aktuellt.uppdrag.id === u.id) await visa(u, aktuellt.el.isConnected ? aktuellt.el : el);
+    }
   }
 
   // ---------- Visa stort / ta bort ----------

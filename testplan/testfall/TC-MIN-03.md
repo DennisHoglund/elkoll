@@ -8,7 +8,7 @@
 | **Prioritet** | Låg |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/platsminne.spec.js`](../../tests/platsminne.spec.js#L34) – *inget platsminne första gången på en adress* |
+| **Playwright** | [`tests/platsminne.spec.js`](../../tests/platsminne.spec.js#L35) – *inget platsminne första gången på en adress* |
 
 ## Förutsättningar
 

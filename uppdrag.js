@@ -201,6 +201,7 @@ window.ElkollUppdrag = (function () {
   function openNytt(id) {
     const r = id ? lista.find((x) => x.id === id) : null;
     redigerar = r || null;
+    window.ElkollKunder.ladda(T.state.team, lista);
     $('form-uppdrag').reset();
     $('nytt-titel').textContent = r ? 'Ändra uppdrag' : 'Nytt uppdrag';
     $('nytt-avbryt').setAttribute('href', r ? '#uppdrag/' + encodeURIComponent(r.id) : '#idag');

@@ -5,8 +5,8 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 
 | | |
 |---|---|
-| **Testfall** | 49 |
-| **Automatiserade** | 43 (körs på iPhone/WebKit och Android/Chromium) |
+| **Testfall** | 52 |
+| **Automatiserade** | 46 (körs på iPhone/WebKit och Android/Chromium) |
 | **Manuella** | 6 (kräver riktig iPhone eller riktig backend) |
 | **Senaste testrapport** | [dennishoglund.github.io/elkoll/rapport/](https://dennishoglund.github.io/elkoll/rapport/) |
 | **Krav** | [SPEC.md](../SPEC.md) |
@@ -56,6 +56,14 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 | [TC-UPP-12](testfall/TC-UPP-12.md) | [Diktera med tangentbordet](testfall/TC-UPP-12.md) | Hög | 🖐️ |
 | [TC-UPP-13](testfall/TC-UPP-13.md) | [Riktig tolkning med Gemini](testfall/TC-UPP-13.md) | Hög | 🖐️ |
 | [TC-UPP-14](testfall/TC-UPP-14.md) | [Tolkningen hänger aldrig](testfall/TC-UPP-14.md) | Hög | 🤖 |
+
+## Kundregister
+
+| ID | Testfall | Prio | Typ |
+|---|---|---|---|
+| [TC-KUND-01](testfall/TC-KUND-01.md) | [Autofyll från kundnamn](testfall/TC-KUND-01.md) | Hög | 🤖 |
+| [TC-KUND-02](testfall/TC-KUND-02.md) | [Autofyll från adress](testfall/TC-KUND-02.md) | Hög | 🤖 |
+| [TC-KUND-03](testfall/TC-KUND-03.md) | [Inga felaktiga förslag](testfall/TC-KUND-03.md) | Låg | 🤖 |
 
 ## Platsminne
 

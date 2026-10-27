@@ -316,3 +316,16 @@ p { margin: 0; }
 .minne-lista a { display: flex; flex-direction: column; gap: 2px; padding: 12px 0; text-decoration: none; color: var(--text); }
 .minne-datum { font-size: 13px; font-weight: 700; color: var(--muted); }
 .minne-not { font-size: 14px; color: var(--text2); white-space: pre-wrap; }
+
+/* ---------- Kundförslag ---------- */
+.forslag { list-style: none; margin: -4px 0 0; padding: 4px; border: 1px solid var(--kant2); border-radius: 12px; background: var(--yta); box-shadow: var(--skugga); }
+.forslag button {
+  width: 100%; min-height: 52px; padding: 8px 10px; border: none; border-radius: 8px; background: none; color: var(--text);
+  display: grid; grid-template-columns: 1fr auto; grid-template-areas: "namn antal" "info antal"; text-align: left; gap: 1px 8px; font: inherit; cursor: pointer;
+}
+.forslag button:active, .forslag button:hover { background: var(--yta2); }
+.forslag strong { grid-area: namn; font-size: 16px; }
+.forslag span { grid-area: info; font-size: 13px; color: var(--muted); }
+.forslag .forslag-antal { grid-area: antal; align-self: center; padding: 2px 8px; border-radius: 8px; background: var(--yta2); color: var(--text2); font-weight: 700; font-size: 12px; }
+/* Fält och kundförslag ska inte hamna bakom den fasta Spara-knappen när de scrollas fram */
+#form-uppdrag input, #form-uppdrag textarea, .forslag { scroll-margin-bottom: 120px; }

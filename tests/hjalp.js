@@ -20,9 +20,9 @@ const test = base.test.extend({
 });
 
 // Bifogar en skärmdump till rapporten
-async function bild(page, namn) {
+async function bild(page, namn, { hela = true } = {}) {
   await page.waitForTimeout(250); // låt animationer landa
-  await test.info().attach(namn, { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
+  await test.info().attach(namn, { body: await page.screenshot({ fullPage: hela }), contentType: 'image/png' });
 }
 
 module.exports = { test, expect: base.expect, bild };

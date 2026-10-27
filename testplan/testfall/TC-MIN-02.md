@@ -8,7 +8,7 @@
 | **Prioritet** | Medel |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/platsminne.spec.js`](../../tests/platsminne.spec.js#L24) – *öppna ett gammalt besök från platsminnet* |
+| **Playwright** | [`tests/platsminne.spec.js`](../../tests/platsminne.spec.js#L25) – *öppna ett gammalt besök från platsminnet* |
 
 ## Förutsättningar
 

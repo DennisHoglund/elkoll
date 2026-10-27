@@ -153,6 +153,7 @@
   window.ElkollTeam.setup(sb, () => { route(); window.ElkollUppdrag.load(); });
   window.ElkollUppdrag.setup(sb, { synka });
   window.ElkollFoto.setup(sb, { synka });
+  window.ElkollKunder.setup(sb);
 
   // ---------- Navigering (#idag, #nytt, #nytt/ID, #uppdrag/ID, #team) ----------
   // Senast visade vy. Formulär och uppdragskort byggs inte om när samma vy redan visas –

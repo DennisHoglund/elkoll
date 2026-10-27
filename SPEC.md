@@ -36,6 +36,11 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 - Navigera (Apple Kartor på iPhone, annars Google Maps), Ring kund, På väg-sms, Ring avsändaren.
 - Kunduppgifter, portkod i stor stil, avsändarens originaltext, materiallista att bocka av (sparas lokalt), status Planerad/Klar/Återbesök, Ändra, Ta bort (två tryck).
 
+### 4.8 Platsminne
+- På uppdragskortet: *Varit här förut: N besök* (eller *N andra besök på adressen* om de är kommande). Tryck för datum, uppgift, vem, status och anteckningar; tryck på ett besök för att öppna det.
+- Matchning: samma gata och nummer (delen före första kommatecknet, skiftlägesokänsligt). Har båda uppdragen plats krävs < 300 m, så samma gatunamn i en annan ort räknas inte.
+- Hämtas från servern (hela historiken, max 30) med lokal lista som reserv utan täckning. Uppdrag äldre än 60 dagar hämtas när de öppnas.
+
 ### 4.7 Karta per datum (steg 4)
 - Kartikonen bredvid avataren. Dagens uppdrag som numrerade nålar i samma ordning som listan, Mina/Alla och dagbyte delas med listan.
 - Tryck på nål: kort med tid, adress, uppgift, **Navigera** och **Öppna**. Egen position (blå prick) och positionsknapp.
@@ -63,7 +68,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 
 ## 7. Tester
 - Playwright, iPhone 14 (WebKit) och Pixel 7 (Chromium). Supabase, tolkningsfunktionen, CDN och typsnitt mockas i `tests/mock.js`.
-- Testplan i `testplan/` (46 testfall, 40 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
+- Testplan i `testplan/` (49 testfall, 43 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
 
 ## 8. Beslut
 - Inloggning med lösenord i stället för magisk länk – delat projekt utan egen SMTP.
@@ -73,4 +78,4 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 
 ## 9. Kvar att göra
 - Egenkontroll (checklista per uppdragstyp).
-- Push-notis vid nytt uppdrag. Platsminne (tidigare besök på samma adress).
+- Push-notis vid nytt uppdrag.

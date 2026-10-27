@@ -304,3 +304,15 @@ p { margin: 0; }
 :root[data-theme="dark"] #karta:not(.sat) .leaflet-tile-pane { filter: brightness(.75) contrast(1.1); }
 @media (prefers-color-scheme: dark) { :root[data-theme="auto"] #karta:not(.sat) .leaflet-tile-pane { filter: brightness(.75) contrast(1.1); } }
 .leaflet-top.leaflet-right { top: env(safe-area-inset-top); }
+
+/* ---------- Platsminne ---------- */
+.minne { padding: 0; }
+.minne summary { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 16px; font-weight: 700; cursor: pointer; list-style: none; }
+.minne summary::-webkit-details-marker { display: none; }
+.minne summary::after { content: ''; margin-left: auto; width: 10px; height: 10px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .15s; }
+.minne[open] summary::after { transform: rotate(-135deg); }
+.minne-lista { list-style: none; margin: 0; padding: 0 16px 8px; }
+.minne-lista li { border-top: 1px solid var(--kant); }
+.minne-lista a { display: flex; flex-direction: column; gap: 2px; padding: 12px 0; text-decoration: none; color: var(--text); }
+.minne-datum { font-size: 13px; font-weight: 700; color: var(--muted); }
+.minne-not { font-size: 14px; color: var(--text2); white-space: pre-wrap; }

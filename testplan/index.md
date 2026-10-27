@@ -5,8 +5,8 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 
 | | |
 |---|---|
-| **Testfall** | 46 |
-| **Automatiserade** | 40 (körs på iPhone/WebKit och Android/Chromium) |
+| **Testfall** | 49 |
+| **Automatiserade** | 43 (körs på iPhone/WebKit och Android/Chromium) |
 | **Manuella** | 6 (kräver riktig iPhone eller riktig backend) |
 | **Senaste testrapport** | [dennishoglund.github.io/elkoll/rapport/](https://dennishoglund.github.io/elkoll/rapport/) |
 | **Krav** | [SPEC.md](../SPEC.md) |
@@ -56,6 +56,14 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 | [TC-UPP-12](testfall/TC-UPP-12.md) | [Diktera med tangentbordet](testfall/TC-UPP-12.md) | Hög | 🖐️ |
 | [TC-UPP-13](testfall/TC-UPP-13.md) | [Riktig tolkning med Gemini](testfall/TC-UPP-13.md) | Hög | 🖐️ |
 | [TC-UPP-14](testfall/TC-UPP-14.md) | [Tolkningen hänger aldrig](testfall/TC-UPP-14.md) | Hög | 🤖 |
+
+## Platsminne
+
+| ID | Testfall | Prio | Typ |
+|---|---|---|---|
+| [TC-MIN-01](testfall/TC-MIN-01.md) | [Tidigare besök på adressen](testfall/TC-MIN-01.md) | Hög | 🤖 |
+| [TC-MIN-02](testfall/TC-MIN-02.md) | [Öppna ett gammalt besök](testfall/TC-MIN-02.md) | Medel | 🤖 |
+| [TC-MIN-03](testfall/TC-MIN-03.md) | [Första besöket](testfall/TC-MIN-03.md) | Låg | 🤖 |
 
 ## Karta
 

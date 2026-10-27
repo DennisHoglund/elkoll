@@ -73,6 +73,11 @@ function filtrera(rows, params) {
     const val = rest.join('.');
     if (op === 'eq') ut = ut.filter((r) => String(r[k]) === val);
     if (op === 'gte') ut = ut.filter((r) => String(r[k]) >= val);
+    if (op === 'neq') ut = ut.filter((r) => String(r[k]) !== val);
+    if (op === 'ilike') {
+      const re = new RegExp('^' + val.replace(/\\([%_\\])/g, '$1').replace(/[.+?^${}()|[\]]/g, '\\$&').replace(/[%*]/g, '.*') + '$', 'i');
+      ut = ut.filter((r) => re.test(String(r[k] || '')));
+    }
   }
   return ut;
 }

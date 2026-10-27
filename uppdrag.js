@@ -127,6 +127,7 @@ window.ElkollUppdrag = (function () {
     const vantar = new Map(ko.filter((i) => i.op !== 'delete').map((i) => [i.id, i.row]));
     lista = (server || []).filter((r) => !bort.has(r.id) && !vantar.has(r.id))
       .concat([...vantar.values()].map((r) => Object.assign({}, r, { _vantar: true })));
+    for (const [id, r] of aldre) if (!bort.has(id) && !lista.some((x) => x.id === id)) lista.push(r);
     uppdatera();
     return { ok: !error, offline: error ? U.isNetworkError(error) : false, error, antal: lista.length };
   }
@@ -348,11 +349,25 @@ window.ElkollUppdrag = (function () {
 
   function bockat(id) { return U.store.json('elkoll-bockat-' + id, []); }
 
+  // Äldre uppdrag (utanför de senaste 60 dagarna) hämtas när de öppnas, t.ex. från platsminnet
+  const aldre = new Map();
+  async function hamtaUppdrag(id) {
+    try {
+      const { data } = await sb.from('elkoll_uppdrag').select('*').eq('id', id).maybeSingle();
+      return data || null;
+    } catch (e) { return null; }
+  }
+
   function openKort(id) {
     const r = lista.find((x) => x.id === id);
     if (!r) {
       $('kort-status').textContent = '';
-      $('kort').innerHTML = '<div class="empty"><p><strong>Uppdraget finns inte längre.</strong></p><p><a href="#idag">Till listan</a></p></div>';
+      $('kort').innerHTML = '<div class="empty"><p><strong>Hämtar uppdraget…</strong></p></div>';
+      hamtaUppdrag(id).then((rad) => {
+        if (decodeURIComponent(location.hash.split('/')[1] || '') !== id) return;
+        if (rad) { aldre.set(rad.id, rad); lista.push(rad); openKort(id); return; }
+        $('kort').innerHTML = '<div class="empty"><p><strong>Uppdraget finns inte längre.</strong></p><p><a href="#idag">Till listan</a></p></div>';
+      });
       return;
     }
     const jag = T.state.jag;
@@ -387,6 +402,7 @@ window.ElkollUppdrag = (function () {
         rad('Till', esc(tillNamn)) +
         rad('Från', esc(fran ? fran.namn : '–'), franTel ? '<a class="ring-liten" href="tel:' + esc(franTel) + '" aria-label="Ring ' + esc(fran.namn) + '">' + IKON.ring.replace(/24/g, '18') + 'Ring</a>' : '') +
       '</div>' +
+      '<div id="platsminne"></div>' +
       (r.fritext ? '<div class="card stack"><h2>' + esc(fran ? fran.namn.split(' ')[0] + 's meddelande' : 'Meddelande') + '</h2><p class="fritext">' + esc(r.fritext) + '</p></div>' : '') +
       (r.material && r.material.length ? '<div class="card"><h2>Material att ta med</h2><div class="checks">' +
         r.material.map((m, i) => '<label class="check"><input type="checkbox" data-bock="' + i + '"' + (b.includes(i) ? ' checked' : '') + '> ' + esc(m) + '</label>').join('') +
@@ -405,6 +421,60 @@ window.ElkollUppdrag = (function () {
         '<button class="btn ghost danger" type="button" data-radera>Ta bort</button>' +
       '</div>';
     window.ElkollFoto.visa(r, $('foto-yta'));
+    visaPlatsminne(r);
+  }
+
+  // ---------- Platsminne: andra besök på samma adress ----------
+  function gata(adress) { return String(adress || '').split(',')[0].replace(/\s+/g, ' ').trim(); }
+  function avstandM(a, b) {
+    const R = 6371000, rad = Math.PI / 180;
+    const dLat = (b.lat - a.lat) * rad, dLon = (b.lon - a.lon) * rad;
+    const x = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(x));
+  }
+  // Samma gata och nummer – och om båda har plats, högst 300 m ifrån varandra (samma gatunamn finns i flera orter)
+  function sammaPlats(a, b) {
+    if (gata(a.adress).toLowerCase() !== gata(b.adress).toLowerCase()) return false;
+    if (a.lat != null && b.lat != null) return avstandM(a, b) < 300;
+    return true;
+  }
+
+  async function tidigareBesok(r) {
+    const g = gata(r.adress);
+    if (!g) return [];
+    let rader = lista;
+    if (navigator.onLine) {
+      try {
+        const monster = g.replace(/[%_\\]/g, (c) => '\\' + c) + '%';
+        const { data, error } = await sb.from('elkoll_uppdrag')
+          .select('id, datum, tid, adress, lat, lon, uppgift, status, kommentar, tilldelad')
+          .eq('team_id', r.team_id).neq('id', r.id).ilike('adress', monster)
+          .order('datum', { ascending: false }).limit(30);
+        if (!error && data) rader = data.concat(lista.filter((x) => !data.some((d) => d.id === x.id)));
+      } catch (e) { /* använd det som finns lokalt */ }
+    }
+    return rader.filter((x) => x.id !== r.id && sammaPlats(r, x))
+      .sort((a, b) => b.datum.localeCompare(a.datum));
+  }
+
+  async function visaPlatsminne(r) {
+    const besok = await tidigareBesok(r);
+    const el = $('platsminne');
+    if (!el || decodeURIComponent(location.hash.split('/')[1] || '') !== r.id) return;
+    if (!besok.length) { el.innerHTML = ''; return; }
+    const idag = U.isoDag();
+    const forut = besok.filter((b) => b.datum <= r.datum).length;
+    const rubrik = forut ? 'Varit här förut: ' + forut + (forut === 1 ? ' besök' : ' besök') : besok.length + (besok.length === 1 ? ' annat besök' : ' andra besök') + ' på adressen';
+    el.innerHTML = '<details class="card minne"><summary>' +
+      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>' +
+      '<span>' + esc(rubrik) + '</span></summary><ul class="minne-lista">' +
+      besok.map((b) => '<li><a href="#uppdrag/' + encodeURIComponent(b.id) + '">' +
+        '<span class="minne-datum">' + esc(U.kortDag(b.datum)) + (b.datum > idag ? ' · kommande' : '') + '</span>' +
+        '<strong>' + esc(b.uppgift) + '</strong>' +
+        '<span class="muted small">' + esc([b.tilldelad ? T.namn(b.tilldelad) : '', STATUS[b.status] || ''].filter(Boolean).join(' · ')) + '</span>' +
+        (b.kommentar ? '<span class="minne-not">' + esc(b.kommentar) + '</span>' : '') +
+        '</a></li>').join('') +
+      '</ul></details>';
   }
 
   async function klickKort(e) {

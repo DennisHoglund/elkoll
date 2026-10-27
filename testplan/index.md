@@ -24,6 +24,7 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 | [TC-INL-05](testfall/TC-INL-05.md) | [Inloggningen finns kvar efter omstart](testfall/TC-INL-05.md) | Hög | 🤖 |
 | [TC-INL-06](testfall/TC-INL-06.md) | [Logga ut](testfall/TC-INL-06.md) | Medel | 🤖 |
 | [TC-INL-07](testfall/TC-INL-07.md) | [Ny kollega skapar konto](testfall/TC-INL-07.md) | Hög | 🤖 |
+| [TC-INL-08](testfall/TC-INL-08.md) | [Logga ut när servern svarar med fel](testfall/TC-INL-08.md) | Hög | 🤖 |
 
 ## Teamet
 

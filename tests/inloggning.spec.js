@@ -51,6 +51,15 @@ test.describe('Inloggning', () => {
     await expect(page.locator('#view-login')).toBeVisible();
   });
 
+  test('logga ut fungerar även när servern svarar med fel', { annotation: { type: 'testfall', description: 'TC-INL-08' } }, async ({ idag: page, api }) => {
+    api.logoutStatus = 500;
+    await flik(page, 'Mer');
+    await page.locator('#screen-mer').getByRole('button', { name: 'Logga ut' }).click();
+    await expect(page.locator('#view-login')).toBeVisible();
+    await page.reload();
+    await expect(page.locator('#view-login')).toBeVisible();
+  });
+
   test('ny kollega kan skapa konto och hamnar på välkomstsidan', { annotation: { type: 'testfall', description: 'TC-INL-07' } }, async ({ page, api }) => {
     await page.goto('./');
     await page.getByRole('button', { name: 'Ny här? Skapa konto' }).click();

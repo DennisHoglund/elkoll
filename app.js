@@ -133,7 +133,19 @@
     setMsg('');
   });
 
-  document.querySelectorAll('[data-logout]').forEach((b) => b.addEventListener('click', () => sb.auth.signOut()));
+  // signOut() loggar ut mot servern; om det misslyckas (ingen täckning, serverfel) behåller
+  // supabase-js sessionen utan att säga något – även med scope 'local' frågas servern.
+  // Rensa då sessionen i telefonen själv och ladda om.
+  async function loggaUt() {
+    const { error } = await sb.auth.signOut();
+    if (!error) return;
+    try {
+      localStorage.removeItem(sb.auth.storageKey);
+      localStorage.removeItem(sb.auth.storageKey + '-code-verifier');
+    } catch (e) { /* privat läge e.d. */ }
+    location.reload();
+  }
+  document.querySelectorAll('[data-logout]').forEach((b) => b.addEventListener('click', loggaUt));
 
   // ---------- Synk ----------
   let userId = null;

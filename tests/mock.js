@@ -91,7 +91,7 @@ function filtrera(rows, params) {
 }
 
 async function mocka(page, { data = exempelData(), tolkning = TOLKNING } = {}) {
-  const api = { db: data, tolkning, tolkStatus: 200, tolkFordrojning: 0, tolkAnrop: [], anrop: [], nere: false, signup: null, uppladdade: [], borttagnaFoton: [], geoAnrop: [],
+  const api = { db: data, tolkning, tolkStatus: 200, logoutStatus: 204, tolkFordrojning: 0, tolkAnrop: [], anrop: [], nere: false, signup: null, uppladdade: [], borttagnaFoton: [], geoAnrop: [],
     // Adress (gemener) → koordinater. Saknas adressen svarar "Nominatim" med en standardplats.
     geo: { 'okänd väg 99': null } };
 
@@ -144,7 +144,10 @@ async function mocka(page, { data = exempelData(), tolkning = TOLKNING } = {}) {
       return json(route, 200, session(ny));
     }
     if (p === '/auth/v1/user') return json(route, 200, ANVANDARE);
-    if (p === '/auth/v1/logout') return route.fulfill({ status: 204, headers: cors() });
+    if (p === '/auth/v1/logout') {
+      if (api.logoutStatus !== 204) return json(route, api.logoutStatus, { code: api.logoutStatus, msg: 'Serverfel' });
+      return route.fulfill({ status: 204, headers: cors() });
+    }
 
     // ---- Tolkning ----
     if (p === '/functions/v1/elkoll-tolka') {

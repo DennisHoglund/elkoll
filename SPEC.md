@@ -39,7 +39,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 ### 4.12 Navigering, Tid-flik och ägare
 - **Flikrad** längst ner: Uppdrag · Karta · Tid · Mer (aktiv flik svart med orange streck). Döljs på välkomstsidan, i formuläret och på uppdragskortet. **Nytt uppdrag** ligger ovanför flikraden.
 - **Tid**: pågående tid (klocka, uppdrag, Stoppa) och *Min vecka* med staplar per dag; röd prick på fliken medan tid pågår. Länk till teamets tidrapport.
-- **Mer**: profil, Teamet, Fakturering (bara ägare, med antal att fakturera), Tidrapport för teamet, Utseende, Logga ut, version.
+- **Mer**: profil, Teamet, Fakturering (bara ägare, med antal att fakturera), Tidrapport för teamet, Utseende, Logga ut (rensar sessionen i telefonen även om servern inte svarar), version.
 - **Ägare** (`elkoll_medlem.agare`): ser Fakturering och kan utse/ta bort ägare under Teamet. Den som skapar teamet blir ägare; team utan ägare räknas som att alla är ägare tills någon utses. Obs: döljer vyn i appen – databasen skyddar på teamnivå, inte per roll.
 - **Ej klart sedan tidigare**: på idag visas uppdrag från tidigare dagar som inte är Klar (t.ex. Återbesök) överst med sitt datum.
 

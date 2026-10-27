@@ -6,5 +6,5 @@ window.ELKOLL_CONFIG = {
   supabaseAnonKey: 'sb_publishable_bKrpOKc38I20NvhC2vjmhw_YyZbm94Q',
   tolkaFunktion: 'elkoll-tolka',
   tolkaTimeoutMs: 40000,
-  version: '15'              // visas i Teamet – höj samtidigt som CACHE i sw.js
+  version: '16'              // visas i Teamet – höj samtidigt som CACHE i sw.js
 };

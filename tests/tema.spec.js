@@ -1,8 +1,8 @@
-const { test, expect, bild } = require('./hjalp');
+const { test, expect, bild, flik } = require('./hjalp');
 
 test.describe('Tema', () => {
   test('temaknappen växlar Auto → Ljust → Mörkt och kommer ihåg valet', { annotation: { type: 'testfall', description: 'TC-TEM-01' } }, async ({ idag: page }) => {
-    await page.locator('#btn-team').click();
+    await flik(page, 'Mer');
     const knapp = page.locator('#btn-theme');
     await expect(knapp).toHaveText('Auto');
     await knapp.click();

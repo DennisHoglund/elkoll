@@ -16,8 +16,8 @@ function forbered(api) {
 
 async function oppna(page) {
   await inloggad(page);
-  await page.goto('./#team');
-  await page.getByRole('link', { name: /Fakturering/ }).click();
+  await page.goto('./#mer');
+  await page.locator('#screen-mer').getByRole('link', { name: /Fakturering/ }).click();
   await expect(page.locator('#screen-faktura')).toBeVisible();
 }
 

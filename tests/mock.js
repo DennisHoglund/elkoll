@@ -45,7 +45,7 @@ function exempelData() {
   return {
     elkoll_team: [{ id: TEAM, namn: 'Sundsvalls El AB', skapad_av: ANVANDARE.id }],
     elkoll_medlem: [
-      { id: M.dennis, team_id: TEAM, namn: 'Dennis Höglund', telefon: '070-000 00 01', epost: ANVANDARE.email },
+      { id: M.dennis, team_id: TEAM, namn: 'Dennis Höglund', telefon: '070-000 00 01', epost: ANVANDARE.email, agare: true },
       { id: M.kalle, team_id: TEAM, namn: 'Kalle Lind', telefon: '070-000 00 02', epost: 'kalle@elkoll.se' },
       { id: M.maria, team_id: TEAM, namn: 'Maria Sjö', telefon: '070-000 00 03', epost: 'maria@elkoll.se' }
     ],

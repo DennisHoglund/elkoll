@@ -8,7 +8,7 @@
 | **Prioritet** | Hög |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/inloggning.spec.js`](../../tests/inloggning.spec.js#L53) – *ny kollega kan skapa konto och hamnar på välkomstsidan* |
+| **Playwright** | [`tests/inloggning.spec.js`](../../tests/inloggning.spec.js#L54) – *ny kollega kan skapa konto och hamnar på välkomstsidan* |
 
 ## Förutsättningar
 

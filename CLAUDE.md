@@ -34,7 +34,9 @@ Läs `SPEC.md` för hela specifikationen. Det här är reglerna som gäller vid 
 - Generella `input`/`label`-regler begränsas till `.form`.
 
 ## Kod
-- Moduler som IIFE på `window` (`ElkollUtil`, `ElkollKo`, `ElkollTeam`, `ElkollUppdrag`).
+- Moduler som IIFE på `window` (`ElkollUtil`, `ElkollKo`, `ElkollTeam`, `ElkollUppdrag`, `ElkollFoto`, `ElkollKarta`, `ElkollKunder`, `ElkollTid`, `ElkollFaktura`).
+- Navigering via hash (`#idag`, `#karta`, `#mintid`, `#mer`, `#team`, `#tid`, `#faktura`, `#nytt[/id]`, `#uppdrag/id`) i `app.js` → `route()`. Nya vyer: lägg till i `screen()` och `FLIK_FOR`.
+- Nya kolumner: hantera att schema.sql kanske inte körts än (kön tar bort okända kolumner och försöker igen).
 - `localStorage` alltid via `ElkollUtil.store` (try/catch). Nycklar börjar med `elkoll-`.
 - Escapa all användartext som hamnar i HTML (`esc()`).
 

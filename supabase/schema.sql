@@ -52,6 +52,13 @@ create table if not exists public.elkoll_uppdrag (
   updated_at  timestamptz not null default now()
 );
 
+-- Ägare ser Fakturering i appen. Den som skapade teamet blir ägare.
+alter table public.elkoll_medlem add column if not exists agare boolean not null default false;
+update public.elkoll_medlem m set agare = true
+  from public.elkoll_team t join auth.users u on u.id = t.skapad_av
+  where t.id = m.team_id and m.epost = lower(u.email) and m.agare = false
+    and not exists (select 1 from public.elkoll_medlem x where x.team_id = m.team_id and x.agare);
+
 -- Fakturering: debiteras = false för garanti/internt, fakturerad_at sätts när ägaren markerat uppdraget fakturerat
 alter table public.elkoll_uppdrag add column if not exists debiteras boolean not null default true;
 alter table public.elkoll_uppdrag add column if not exists fakturerad_at timestamptz;

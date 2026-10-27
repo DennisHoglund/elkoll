@@ -8,7 +8,7 @@
 | **Prioritet** | Hög |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/team.spec.js`](../../tests/team.spec.js#L24) – *visar medlemmar med telefon och ringknapp* |
+| **Playwright** | [`tests/team.spec.js`](../../tests/team.spec.js#L25) – *visar medlemmar med telefon och ringknapp* |
 
 ## Förutsättningar
 

@@ -89,10 +89,6 @@
         </div>
         <div class="row">
           <button class="badge" id="queue-badge" type="button" hidden></button>
-          <a class="icon-btn round" id="btn-karta" href="#karta" aria-label="Visa på karta">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>
-          </a>
-          <a class="avatar" id="btn-team" href="#team" aria-label="Teamet och inställningar"></a>
         </div>
       </header>
 
@@ -106,7 +102,7 @@
 
       <div class="pad list" id="lista" aria-live="polite"></div>
 
-      <div class="bottom">
+      <div class="bottom ovan-flikar">
         <a class="btn primary big" href="#nytt" id="btn-nytt">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
           Nytt uppdrag
@@ -182,10 +178,6 @@
     <section id="screen-karta" class="karta-screen" hidden>
       <div id="karta" aria-label="Karta"></div>
       <div class="karta-top">
-        <a class="pill" href="#idag" aria-label="Tillbaka till listan">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-          Lista
-        </a>
         <div class="pill dagval">
           <button type="button" id="karta-prev" aria-label="Föregående dag"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
           <span id="karta-dag"></span>
@@ -206,9 +198,9 @@
     <!-- Fakturering -->
     <section id="screen-faktura" class="screen" hidden>
       <header class="bar">
-        <a class="back" href="#team">
+        <a class="back" href="#mer">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-          Teamet
+          Mer
         </a>
       </header>
       <header class="head">
@@ -227,9 +219,9 @@
     <!-- Tidrapport -->
     <section id="screen-tid" class="screen" hidden>
       <header class="bar">
-        <a class="back" href="#team">
+        <a class="back" href="#mer">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-          Teamet
+          Mer
         </a>
       </header>
       <header class="head">
@@ -246,9 +238,9 @@
     <!-- Teamet -->
     <section id="screen-team" class="screen" hidden>
       <header class="bar">
-        <a class="back" href="#idag">
+        <a class="back" href="#mer">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-          Uppdrag
+          Mer
         </a>
       </header>
       <header class="head">
@@ -271,27 +263,64 @@
           <p class="muted small">Kollegan skapar sedan ett konto i Elkoll med samma e-post och kommer direkt in i teamet.</p>
         </form>
 
-        <a class="card tid-lank" href="#faktura">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h8M9 17h8"/></svg>
-          <span><strong>Fakturering</strong><span class="muted small">Klara uppdrag att fakturera, per kund</span></span>
-        </a>
-
-        <a class="card tid-lank" href="#tid">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg>
-          <span><strong>Tidrapport</strong><span class="muted small">Tid per person och dag, vecka för vecka</span></span>
-        </a>
-
-        <div class="card stack">
-          <div class="row-between">
-            <span>Utseende</span>
-            <button class="btn ghost small-btn" id="btn-theme" type="button" aria-label="Byt tema"><span id="theme-label">Auto</span></button>
-          </div>
-          <p class="muted small" id="user-email"></p>
-          <p class="muted small" id="app-version"></p>
-          <button class="btn ghost" type="button" data-logout>Logga ut</button>
-        </div>
       </div>
     </section>
+
+    <!-- Tid: min vecka -->
+    <section id="screen-mintid" class="screen" hidden>
+      <header class="head">
+        <p class="kicker" id="mintid-period"></p>
+        <h1>Tid</h1>
+      </header>
+      <div class="pad stack">
+        <div id="mintid-pagar"></div>
+        <div class="card" id="mintid-vecka"></div>
+        <a class="card menyrad" href="#tid"><span><strong>Teamets tidrapport</strong><span class="muted small">Per person och dag, vecka för vecka</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="chev"><path d="m9 18 6-6-6-6"/></svg></a>
+      </div>
+    </section>
+
+    <!-- Mer -->
+    <section id="screen-mer" class="screen" hidden>
+      <header class="head"><h1>Mer</h1></header>
+      <div class="pad stack">
+        <div class="card profil">
+          <span class="avatar stor" id="mer-avatar" aria-hidden="true"></span>
+          <span class="profil-text"><strong id="mer-namn"></strong><span class="muted small" id="mer-team"></span></span>
+        </div>
+        <div class="card meny">
+          <a class="menyrad" href="#team">
+            <span class="meny-ikon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/></svg></span>
+            <span><strong>Teamet</strong><span class="muted small" id="mer-team-antal">Lägg till, ta bort och bjud in</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="chev"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+          <a class="menyrad" href="#faktura" id="mer-faktura" hidden>
+            <span class="meny-ikon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h8M9 17h8"/></svg></span>
+            <span><strong>Fakturering</strong><span class="muted small">Klara uppdrag att fakturera</span></span>
+            <span class="meny-badge" id="mer-faktura-antal" hidden></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="chev"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+          <a class="menyrad" href="#tid">
+            <span class="meny-ikon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg></span>
+            <span><strong>Tidrapport för teamet</strong><span class="muted small">Per person och dag, vecka för vecka</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="chev"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </div>
+        <div class="card meny">
+          <div class="menyrad">
+            <span class="meny-ikon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span>
+            <span><strong>Utseende</strong><span class="muted small">Auto följer telefonens inställning</span></span>
+            <button class="btn ghost small-btn" id="btn-theme" type="button" aria-label="Byt tema"><span id="theme-label">Auto</span></button>
+          </div>
+        </div>
+        <button class="btn ghost" type="button" data-logout>Logga ut</button>
+        <p class="muted small center-text"><span id="app-version"></span> · <span id="user-email"></span></p>
+      </div>
+    </section>
+
+    <!-- Flikrad -->
+    <nav class="flikrad" id="flikrad" aria-label="Huvudmeny" hidden>
+      <a href="#idag" data-flik="idag"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span>Uppdrag</span></a>
+      <a href="#karta" data-flik="karta"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg><span>Karta</span></a>
+      <a href="#mintid" data-flik="mintid"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg><span>Tid</span><i class="flik-prick" id="flik-tid-prick" hidden></i></a>
+      <a href="#mer" data-flik="mer"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>Mer</span></a>
+    </nav>
 
     <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   </div>

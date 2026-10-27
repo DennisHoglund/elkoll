@@ -25,4 +25,14 @@ async function bild(page, namn, { hela = true } = {}) {
   await test.info().attach(namn, { body: await page.screenshot({ fullPage: hela }), contentType: 'image/png' });
 }
 
-module.exports = { test, expect: base.expect, bild };
+// Navigering via flikraden
+async function flik(page, namn) {
+  await page.locator('#flikrad').getByRole('link', { name: namn, exact: true }).click();
+}
+async function teamet(page) {
+  await flik(page, 'Mer');
+  await page.locator('#screen-mer').getByRole('link', { name: /Teamet/ }).click();
+  await base.expect(page.locator('#screen-team')).toBeVisible();
+}
+
+module.exports = { test, expect: base.expect, bild, flik, teamet };

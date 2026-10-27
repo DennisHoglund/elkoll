@@ -1,4 +1,4 @@
-const { test, expect, bild } = require('./hjalp');
+const { test, expect, bild, flik } = require('./hjalp');
 const { ANVANDARE, LOSENORD } = require('./mock');
 
 test.describe('Inloggning', () => {
@@ -35,7 +35,8 @@ test.describe('Inloggning', () => {
     await page.getByRole('button', { name: 'Logga in' }).click();
     await expect(page.locator('#screen-idag')).toBeVisible();
     await expect(page.locator('.job')).toHaveCount(2);
-    await expect(page.locator('#btn-team')).toHaveText('DH');
+    await flik(page, 'Mer');
+    await expect(page.locator('#mer-avatar')).toHaveText('DH');
   });
 
   test('inloggningen finns kvar efter omladdning', { annotation: { type: 'testfall', description: 'TC-INL-05' } }, async ({ idag: page }) => {
@@ -45,8 +46,8 @@ test.describe('Inloggning', () => {
   });
 
   test('logga ut tar en tillbaka till inloggningen', { annotation: { type: 'testfall', description: 'TC-INL-06' } }, async ({ idag: page }) => {
-    await page.locator('#btn-team').click();
-    await page.locator('#screen-team').getByRole('button', { name: 'Logga ut' }).click();
+    await flik(page, 'Mer');
+    await page.locator('#screen-mer').getByRole('button', { name: 'Logga ut' }).click();
     await expect(page.locator('#view-login')).toBeVisible();
   });
 

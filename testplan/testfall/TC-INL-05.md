@@ -8,7 +8,7 @@
 | **Prioritet** | Hög |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/inloggning.spec.js`](../../tests/inloggning.spec.js#L41) – *inloggningen finns kvar efter omladdning* |
+| **Playwright** | [`tests/inloggning.spec.js`](../../tests/inloggning.spec.js#L42) – *inloggningen finns kvar efter omladdning* |
 
 ## Förutsättningar
 

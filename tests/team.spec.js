@@ -1,4 +1,4 @@
-const { test, expect, bild } = require('./hjalp');
+const { test, expect, bild, flik, teamet } = require('./hjalp');
 const { inloggad, M } = require('./mock');
 
 test.describe('Teamet', () => {
@@ -16,13 +16,14 @@ test.describe('Teamet', () => {
     await page.getByLabel('Ditt mobilnummer').fill('070-000 00 01');
     await page.getByRole('button', { name: 'Skapa team' }).click();
     await expect(page.locator('#screen-idag')).toBeVisible();
-    await expect(page.locator('#btn-team')).toHaveText('DH');
+    await flik(page, 'Mer');
+    await expect(page.locator('#mer-avatar')).toHaveText('DH');
     expect(api.db.elkoll_team).toHaveLength(1);
     expect(api.db.elkoll_medlem[0]).toMatchObject({ namn: 'Dennis Höglund', epost: 'dennis@elkoll.se', telefon: '070-000 00 01' });
   });
 
   test('visar medlemmar med telefon och ringknapp', { annotation: { type: 'testfall', description: 'TC-TEAM-02' } }, async ({ idag: page }) => {
-    await page.locator('#btn-team').click();
+    await teamet(page);
     await expect(page.locator('#screen-team')).toBeVisible();
     await expect(page.locator('.member')).toHaveCount(3);
     await expect(page.locator('.member').filter({ hasText: 'Dennis Höglund (du)' })).toBeVisible();
@@ -32,7 +33,7 @@ test.describe('Teamet', () => {
   });
 
   test('lägga till en kollega', { annotation: { type: 'testfall', description: 'TC-TEAM-03' } }, async ({ idag: page, api }) => {
-    await page.locator('#btn-team').click();
+    await teamet(page);
     await page.locator('#form-medlem').getByLabel('Namn', { exact: true }).fill('Sara Berg');
     await page.locator('#form-medlem').getByLabel('Mobilnummer').fill('070-000 00 09');
     await page.locator('#form-medlem').getByLabel('E-post').fill('Sara@Elkoll.se');
@@ -43,7 +44,7 @@ test.describe('Teamet', () => {
   });
 
   test('samma e-post kan inte läggas till två gånger', { annotation: { type: 'testfall', description: 'TC-TEAM-04' } }, async ({ idag: page, api }) => {
-    await page.locator('#btn-team').click();
+    await teamet(page);
     await page.locator('#form-medlem').getByLabel('Namn', { exact: true }).fill('Kalle igen');
     await page.locator('#form-medlem').getByLabel('E-post').fill('kalle@elkoll.se');
     await page.getByRole('button', { name: 'Lägg till' }).click();
@@ -52,7 +53,7 @@ test.describe('Teamet', () => {
   });
 
   test('ta bort kräver två tryck och gör kollegans uppdrag otilldelade', { annotation: { type: 'testfall', description: 'TC-TEAM-05' } }, async ({ idag: page, api }) => {
-    await page.locator('#btn-team').click();
+    await teamet(page);
     const knapp = page.getByRole('button', { name: 'Ta bort Maria Sjö' });
     await knapp.click();
     expect(api.db.elkoll_medlem).toHaveLength(3);
@@ -66,7 +67,7 @@ test.describe('Teamet', () => {
   });
 
   test('skicka inbjudan öppnar sms med länk och rätt e-post', { annotation: { type: 'testfall', description: 'TC-TEAM-07' } }, async ({ idag: page }) => {
-    await page.locator('#btn-team').click();
+    await teamet(page);
     const kalle = page.locator('.member').filter({ hasText: 'Kalle Lind' }).getByRole('link', { name: 'Skicka inbjudan' });
     const href = decodeURIComponent(await kalle.getAttribute('href'));
     expect(href.startsWith('sms:0700000002?&body=')).toBe(true);

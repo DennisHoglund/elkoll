@@ -8,7 +8,7 @@
 | **Prioritet** | Medel |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/team.spec.js`](../../tests/team.spec.js#L45) – *samma e-post kan inte läggas till två gånger* |
+| **Playwright** | [`tests/team.spec.js`](../../tests/team.spec.js#L46) – *samma e-post kan inte läggas till två gånger* |
 
 ## Förutsättningar
 

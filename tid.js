@@ -50,6 +50,14 @@ window.ElkollTid = (function () {
   const hhmm = (iso) => { const d = new Date(iso); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
 
   function pagar() { return U.store.json(PAGAR_KEY, null); }
+
+  // Röd prick på Tid-fliken medan en tid pågår, och Tid-fliken ritas om om den visas
+  function uppdateraOvrigt() {
+    const prick = document.getElementById('flik-tid-prick');
+    if (prick) prick.hidden = !pagarId();
+    const sk = document.getElementById('screen-mintid');
+    if (sk && !sk.hidden) visaMinVecka();
+  }
   function pagarId() { const p = pagar(); return p && p.medlem_id === (T.state.jag && T.state.jag.id) ? p.uppdrag_id : null; }
 
   async function spara(row, op) {
@@ -68,6 +76,7 @@ window.ElkollTid = (function () {
       if (ko.some((i) => i.op === 'tid')) return;   // lokala ändringar väntar – lita på dem
       if (data && data[0]) U.store.setJson(PAGAR_KEY, data[0]); else U.store.del(PAGAR_KEY);
     } catch (e) { /* behåll lokalt */ }
+    uppdateraOvrigt();
   }
 
   // ---------- Starta / stoppa ----------
@@ -86,6 +95,7 @@ window.ElkollTid = (function () {
     rader.push(row);
     render();
     window.ElkollUppdrag.render();
+    uppdateraOvrigt();
     await spara(row);
   }
 
@@ -98,6 +108,8 @@ window.ElkollTid = (function () {
     if (i >= 0) rader[i] = row;
     render();
     window.ElkollUppdrag.render();
+    senasteStopp = row;
+    uppdateraOvrigt();
     await spara(row);
     if (!tyst) U.toast('Tiden är sparad: ' + langd(minuter(row)), 'ok', 2500);
   }
@@ -213,6 +225,62 @@ window.ElkollTid = (function () {
 
   function lamna() { aktuellt = null; clearInterval(ticker); }
 
+  // ---------- Tid-fliken: pågående tid och min vecka ----------
+  let senasteStopp = null;   // nyss stoppat pass, visas direkt även innan servern svarat
+  let minTicker = null;
+  async function visaMinVecka() {
+    const jag = T.state.jag;
+    if (!jag) return;
+    const start = mandag(U.isoDag());
+    const slut = U.plusDagar(start, 7);
+    $('mintid-period').textContent = 'Vecka ' + veckonummer(start) + ' · ' + U.kortDag(start) + ' – ' + U.kortDag(U.plusDagar(start, 6));
+
+    // Pågående tid
+    const p = pagarId() ? pagar() : null;
+    const u = p ? window.ElkollUppdrag.lista.find((x) => x.id === p.uppdrag_id) : null;
+    $('mintid-pagar').innerHTML = p
+      ? '<div class="pagar-kort"><div class="row"><span class="tid-puls" aria-hidden="true"></span><span class="pagar-sedan">Pågår sedan ' + hhmm(p.start) + '</span>' +
+        '<span class="pagar-klocka" id="mintid-klocka">' + klocka(minuter(p)) + '</span></div>' +
+        (u ? '<a class="pagar-uppdrag" href="#uppdrag/' + encodeURIComponent(u.id) + '"><strong>' + esc(u.uppgift) + '</strong><span>' + esc(u.adress) + '</span></a>' : '') +
+        '<button type="button" class="btn primary big" data-tid-stoppa>Stoppa</button></div>'
+      : '<div class="card muted small">Ingen tid pågår. Starta tiden på uppdragskortet när du är på plats.</div>';
+    clearInterval(minTicker);
+    if (p) minTicker = setInterval(() => { const el = document.getElementById('mintid-klocka'); if (el && pagar()) el.textContent = klocka(minuter(pagar())); else clearInterval(minTicker); }, 15000);
+
+    // Min vecka: serverns pass + det som väntar i kön + pågående
+    let mina = U.store.json('elkoll-mintid-cache', []);
+    if (navigator.onLine) {
+      try {
+        const { data, error } = await sb.from('elkoll_tid').select('*').eq('medlem_id', jag.id)
+          .gte('start', new Date(start + 'T00:00').toISOString()).lt('start', new Date(slut + 'T00:00').toISOString());
+        if (!error) { mina = data || []; U.store.setJson('elkoll-mintid-cache', mina); }
+      } catch (e) { /* cache */ }
+    }
+    const ko = userId ? await window.ElkollKo.forUser(userId).catch(() => []) : [];
+    const bort = new Set(ko.filter((i) => i.op === 'tid-delete').map((i) => i.id));
+    const lokala = ko.filter((i) => i.op === 'tid' && i.row.medlem_id === jag.id).map((i) => i.row);
+    if (senasteStopp && senasteStopp.medlem_id === jag.id) lokala.push(senasteStopp);
+    if (p) lokala.push(p);
+    mina = mina.filter((r) => !bort.has(r.id) && !lokala.some((l) => l.id === r.id)).concat(lokala)
+      .filter((r, i, a) => a.findIndex((x) => x.id === r.id) === i)
+      .filter((r) => r.start >= new Date(start + 'T00:00').toISOString() && r.start < new Date(slut + 'T00:00').toISOString());
+
+    const idag = U.isoDag();
+    const perDag = [];
+    for (let i = 0; i < 7; i++) {
+      const d = U.plusDagar(start, i);
+      const min = mina.filter((r) => U.isoDag(new Date(r.start)) === d).reduce((s, r) => s + minuter(r), 0);
+      perDag.push({ d, min });
+    }
+    const total = perDag.reduce((s, x) => s + x.min, 0);
+    const max = Math.max(480, ...perDag.map((x) => x.min));
+    $('mintid-vecka').innerHTML = '<div class="row-between"><h2>Min vecka</h2><span class="vecka-total">' + esc(total ? langd(total) : '0 min') + '</span></div>' +
+      perDag.filter((x, i) => i < 5 || x.min).map((x) =>
+        '<div class="dag-stapel' + (x.d === idag ? ' idag' : '') + '"><span>' + (x.d === idag ? 'Idag' : esc(U.kortDag(x.d).split(' ')[0])) + '</span>' +
+        '<span class="stapel"><span style="width: ' + Math.round(100 * x.min / max) + '%"></span></span>' +
+        '<span class="dag-tid">' + (x.min ? esc(langd(x.min)) : '–') + '</span></div>').join('');
+  }
+
   // ---------- Veckorapport ----------
   async function visaRapport() {
     const team = T.state.team;
@@ -255,5 +323,5 @@ window.ElkollTid = (function () {
     }).join('');
   }
 
-  return { setup, setUser, visa, lamna, starta, stoppa, pagarId, laddaPagaende, visaRapport };
+  return { setup, setUser, visa, lamna, starta, stoppa, pagarId, laddaPagaende, visaRapport, visaMinVecka, uppdateraOvrigt };
 })();

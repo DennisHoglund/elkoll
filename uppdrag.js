@@ -165,19 +165,28 @@ window.ElkollUppdrag = (function () {
     }).join('');
 
     const dagens = sorterade(vis.filter((r) => r.datum === valdDag));
+    // Idag: uppdrag från tidigare dagar som inte är klara (t.ex. återbesök) visas överst
+    const kvar = valdDag === idag
+      ? vis.filter((r) => r.datum < idag && r.status !== 'klar').sort((a, b) => a.datum.localeCompare(b.datum) || (a.tid || '').localeCompare(b.tid || ''))
+      : [];
+    const kvarHtml = kvar.length
+      ? '<h2 class="lista-rubrik">Ej klart sedan tidigare <span class="muted">(' + kvar.length + ')</span></h2>' +
+        kvar.map((r) => kortRad(r, '!', U.kortDag(r.datum))).join('') +
+        (dagens.length ? '<h2 class="lista-rubrik">Idag</h2>' : '')
+      : '';
     if (!dagens.length) {
-      $('lista').innerHTML = '<div class="empty"><p><strong>Inga uppdrag ' + (valdDag === idag ? 'idag' : 'den här dagen') + '.</strong></p>' +
+      $('lista').innerHTML = kvarHtml + '<div class="empty"><p><strong>Inga uppdrag ' + (valdDag === idag ? 'idag' : 'den här dagen') + '.</strong></p>' +
         '<p class="muted">' + (filter === 'mina' && mina === 0 && lista.length ? 'Tryck på Alla för att se teamets uppdrag.' : 'Tryck på Nytt uppdrag för att lägga in ett.') + '</p></div>';
       return;
     }
-    $('lista').innerHTML = dagens.map((r, i) => kortRad(r, i + 1)).join('');
+    $('lista').innerHTML = kvarHtml + dagens.map((r, i) => kortRad(r, i + 1)).join('');
   }
 
   function saknasNu(r) {
     return (r.saknas || []).filter((f) => !String(r[f] || '').trim());
   }
 
-  function kortRad(r, nr) {
+  function kortRad(r, nr, datumText) {
     const fran = T.namn(r.fran);
     const tillNamn = r.tilldelad ? T.namn(r.tilldelad) : '';
     const rad3 = [fran ? 'Från ' + fran : '', r.kund ? 'Kund: ' + r.kund : ''].filter(Boolean).join(' · ');
@@ -187,10 +196,10 @@ window.ElkollUppdrag = (function () {
     saknasNu(r).forEach((f) => chips.push('<span class="chip warn">' + IKON.varn + FALT_NAMN[f] + ' saknas</span>'));
     if (window.ElkollTid && window.ElkollTid.pagarId() === r.id) chips.push('<span class="chip tid">Tid pågår</span>');
     if (r._vantar) chips.push('<span class="chip">Väntar på täckning</span>');
-    return '<a class="job' + (r.status === 'klar' ? ' done' : '') + '" href="#uppdrag/' + encodeURIComponent(r.id) + '">' +
+    return '<a class="job' + (r.status === 'klar' ? ' done' : '') + (datumText ? ' kvar' : '') + '" href="#uppdrag/' + encodeURIComponent(r.id) + '">' +
       '<span class="job-nr" aria-hidden="true">' + nr + '</span>' +
       '<span class="job-text">' +
-        '<span class="job-tid">' + esc(r.tid || 'Ingen tid') + '</span>' +
+        '<span class="job-tid">' + (datumText ? esc(datumText) + (r.tid ? ' · ' + esc(r.tid) : '') : esc(r.tid || 'Ingen tid')) + '</span>' +
         '<span class="job-titel">' + esc(r.uppgift) + '</span>' +
         '<span class="job-adress">' + esc(r.adress) + '</span>' +
         (rad3 ? '<span class="job-meta">' + esc(rad3) + '</span>' : '') +

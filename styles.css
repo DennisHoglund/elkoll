@@ -363,3 +363,62 @@ p { margin: 0; }
 .fak-tid { font-weight: 700; font-size: 15px; }
 .fak-not { white-space: pre-wrap; }
 .fak-badge { align-self: flex-start; padding: 6px 12px; border-radius: 10px; background: var(--ok-bg); color: var(--ok); font-weight: 700; font-size: 14px; }
+
+/* ---------- Flikrad ---------- */
+.flikrad {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 700;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  height: calc(64px + env(safe-area-inset-bottom)); padding: 0 6px env(safe-area-inset-bottom);
+  background: var(--yta); border-top: 1px solid var(--kant);
+}
+.flikrad a {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  color: var(--muted); text-decoration: none; font-size: 12px; font-weight: 600;
+}
+.flikrad a::before { content: ''; position: absolute; top: 0; width: 32px; height: 3px; border-radius: 0 0 3px 3px; background: transparent; }
+.flikrad a.on { color: var(--text); font-weight: 800; }
+.flikrad a.on::before { background: var(--accent); }
+.flikrad a.on svg { stroke-width: 2.4; }
+.flik-prick { position: absolute; top: 8px; left: calc(50% + 8px); width: 10px; height: 10px; border-radius: 5px; background: #E5484D; border: 2px solid var(--yta); }
+body.med-flikar .screen { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
+.bottom.ovan-flikar { bottom: calc(64px + env(safe-area-inset-bottom)); padding-bottom: 12px; }
+body.med-flikar .toast { bottom: calc(150px + env(safe-area-inset-bottom)); }
+.karta-screen { bottom: calc(64px + env(safe-area-inset-bottom)); }
+.karta-top { left: 10px; }
+
+/* ---------- Mer ---------- */
+.profil { display: flex; align-items: center; gap: 14px; }
+.avatar.stor { width: 52px; height: 52px; border-radius: 26px; font-size: 18px; }
+.profil-text { display: flex; flex-direction: column; gap: 2px; }
+.profil-text strong { font-size: 17px; }
+.meny { padding: 0 16px; }
+.menyrad { display: flex; align-items: center; gap: 14px; min-height: 64px; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--kant); }
+.meny .menyrad:last-child { border-bottom: none; }
+.menyrad > span:not(.meny-ikon):not(.meny-badge) { flex: 1; display: flex; flex-direction: column; gap: 1px; }
+a.card.menyrad { padding: 0 16px; border-bottom: 1px solid var(--kant); }
+.menyrad .chev { color: var(--muted); flex-shrink: 0; }
+.meny-ikon { width: 40px; height: 40px; border-radius: 12px; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text); }
+.meny-badge { min-width: 28px; height: 28px; padding: 0 8px; box-sizing: border-box; border-radius: 14px; background: var(--accent); color: var(--on-accent); font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+.center-text { text-align: center; }
+.agare-chip { margin-left: 4px; padding: 2px 8px; border-radius: 8px; background: var(--warn-bg); color: var(--warn); font-size: 12px; font-weight: 700; vertical-align: middle; }
+button.invite { border: none; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+
+/* ---------- Tid-fliken ---------- */
+.pagar-kort { background: var(--mork); color: var(--on-mork); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.pagar-sedan { font-size: 14px; font-weight: 700; opacity: .8; }
+.pagar-klocka { margin-left: auto; font-size: 26px; font-weight: 800; }
+.pagar-uppdrag { display: flex; flex-direction: column; gap: 2px; color: inherit; text-decoration: none; }
+.pagar-uppdrag strong { font-size: 18px; }
+.pagar-uppdrag span { font-size: 14px; opacity: .8; }
+.vecka-total { font-size: 20px; font-weight: 800; }
+.dag-stapel { display: grid; grid-template-columns: 56px 1fr 84px; align-items: center; gap: 10px; min-height: 44px; border-top: 1px solid var(--kant); }
+.dag-stapel:first-of-type { margin-top: 8px; }
+.dag-stapel.idag span:first-child { font-weight: 800; }
+.stapel { height: 10px; border-radius: 5px; background: var(--yta2); overflow: hidden; }
+.stapel span { display: block; height: 100%; border-radius: 5px; background: var(--mork); }
+.dag-stapel.idag .stapel span { background: var(--accent); }
+.dag-tid { text-align: right; font-weight: 700; }
+
+/* ---------- Ej klart sedan tidigare ---------- */
+.lista-rubrik { font-size: 15px; font-weight: 800; margin: 6px 0 0; }
+.job.kvar .job-nr { background: var(--warn-bg); color: var(--warn); }

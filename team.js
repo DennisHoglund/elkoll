@@ -33,7 +33,9 @@ window.ElkollTeam = (function () {
   async function load(userEmail) {
     email = (userEmail || '').toLowerCase();
     try {
-      const mRes = await sb.from('elkoll_medlem').select('id, team_id, namn, telefon, epost').order('namn');
+      let mRes = await sb.from('elkoll_medlem').select('id, team_id, namn, telefon, epost, agare').order('namn');
+      // Om schema.sql inte körts efter ägarrollen saknas kolumnen agare – läs utan den
+      if (mRes.error && /agare/.test(mRes.error.message || '')) mRes = await sb.from('elkoll_medlem').select('id, team_id, namn, telefon, epost').order('namn');
       if (mRes.error) throw mRes.error;
       const egen = (mRes.data || []).find((m) => m.epost === email);
       if (!egen) { satt(null, []); U.store.del(CACHE); return { ok: true }; }
@@ -71,17 +73,22 @@ window.ElkollTeam = (function () {
       const tel = U.telLank(m.telefon);
       return '<li class="member" data-id="' + esc(m.id) + '">' +
         '<span class="avatar ' + (jag ? '' : 'light') + '" aria-hidden="true">' + esc(U.initialer(m.namn)) + '</span>' +
-        '<span class="member-text"><strong>' + esc(m.namn) + (jag ? ' (du)' : '') + '</strong>' +
+        '<span class="member-text"><strong>' + esc(m.namn) + (jag ? ' (du)' : '') + (m.agare ? ' <span class="agare-chip">Ägare</span>' : '') + '</strong>' +
         '<span class="muted small">' + esc(m.telefon || 'Inget nummer') + '</span>' +
         '<span class="muted small">' + esc(m.epost) + '</span>' +
         (jag ? '' : '<a class="invite" href="' + esc(inbjudan(m)) + '">' + IKON_SMS + 'Skicka inbjudan</a>') +
+        (arAgare() && !jag ? '<button type="button" class="invite" data-agare="' + esc(m.id) + '">' + (m.agare ? 'Ta bort som ägare' : 'Gör till ägare') + '</button>' : '') +
         '</span>' +
         (tel && !jag ? '<a class="icon-btn dark" href="tel:' + esc(tel) + '" aria-label="Ring ' + esc(m.namn) + '">' + IKON_RING + '</a>' : '') +
         (jag ? '' : '<button class="icon-btn" type="button" data-ta-bort="' + esc(m.id) + '" aria-label="Ta bort ' + esc(m.namn) + '">' + IKON_SOPOR + '</button>') +
         '</li>';
     }).join('');
-    const av = $('btn-team');
-    if (av) av.textContent = state.jag ? U.initialer(state.jag.namn) : '?';
+  }
+
+  // Ägare ser Fakturering. Saknar teamet ägare (äldre team) räknas alla som ägare tills någon utses.
+  function arAgare() {
+    if (!state.jag) return false;
+    return !!state.jag.agare || !state.medlemmar.some((m) => m.agare);
   }
 
   function msg(id, text, kind) {
@@ -108,7 +115,8 @@ window.ElkollTeam = (function () {
     const id = U.uuid();
     const t = await sb.from('elkoll_team').insert({ id, namn });
     if (t.error) { msg('team-msg', felText(t.error), 'error'); return; }
-    const m = await sb.from('elkoll_medlem').insert({ team_id: id, namn: mittNamn, telefon: tel || null, epost: email });
+    let m = await sb.from('elkoll_medlem').insert({ team_id: id, namn: mittNamn, telefon: tel || null, epost: email, agare: true });
+    if (m.error && /agare/.test(m.error.message || '')) m = await sb.from('elkoll_medlem').insert({ team_id: id, namn: mittNamn, telefon: tel || null, epost: email });
     if (m.error) { msg('team-msg', felText(m.error), 'error'); return; }
     msg('team-msg', '');
     await load(email);
@@ -134,6 +142,21 @@ window.ElkollTeam = (function () {
 
   // Ta bort kräver två tryck så att man inte råkar ta bort någon
   async function klickMedlem(e) {
+    const ag = e.target.closest('[data-agare]');
+    if (ag) {
+      const m = state.medlemmar.find((x) => x.id === ag.getAttribute('data-agare'));
+      if (!m) return;
+      // Inget team utan ägare: sätter man någon annan som ägare blir man det själv också om ingen är det
+      const uppdatering = [sb.from('elkoll_medlem').update({ agare: !m.agare }).eq('id', m.id)];
+      if (!m.agare && state.jag && !state.jag.agare) uppdatering.push(sb.from('elkoll_medlem').update({ agare: true }).eq('id', state.jag.id));
+      const res = await Promise.all(uppdatering);
+      const fel = res.find((r) => r.error);
+      if (fel) { U.toast(/agare/.test(fel.error.message || '') ? 'Kör schema.sql i Supabase först.' : felText(fel.error), 'error', 5000); return; }
+      U.toast(m.namn + (m.agare ? ' är inte längre ägare' : ' är nu ägare'), 'ok', 2500);
+      await load(email);
+      onChange();
+      return;
+    }
     const btn = e.target.closest('[data-ta-bort]');
     if (!btn) return;
     const id = btn.getAttribute('data-ta-bort');
@@ -159,5 +182,5 @@ window.ElkollTeam = (function () {
   }
   function medlem(id) { return state.medlemmar.find((x) => x.id === id) || null; }
 
-  return { setup, load, render, state, namn, medlem };
+  return { setup, load, render, state, namn, medlem, arAgare };
 })();

@@ -5,8 +5,8 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 
 | | |
 |---|---|
-| **Testfall** | 62 |
-| **Automatiserade** | 55 (körs på iPhone/WebKit och Android/Chromium) |
+| **Testfall** | 67 |
+| **Automatiserade** | 60 (körs på iPhone/WebKit och Android/Chromium) |
 | **Manuella** | 7 (kräver riktig iPhone eller riktig backend) |
 | **Senaste testrapport** | [dennishoglund.github.io/elkoll/rapport/](https://dennishoglund.github.io/elkoll/rapport/) |
 | **Krav** | [SPEC.md](../SPEC.md) |
@@ -67,6 +67,16 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 | [TC-TID-04](testfall/TC-TID-04.md) | [Tid i efterhand](testfall/TC-TID-04.md) | Medel | 🤖 |
 | [TC-TID-05](testfall/TC-TID-05.md) | [Veckorapport](testfall/TC-TID-05.md) | Hög | 🤖 |
 | [TC-TID-06](testfall/TC-TID-06.md) | [Tid utan täckning](testfall/TC-TID-06.md) | Medel | 🖐️ |
+
+## Navigering
+
+| ID | Testfall | Prio | Typ |
+|---|---|---|---|
+| [TC-NAV-01](testfall/TC-NAV-01.md) | [Flikraden](testfall/TC-NAV-01.md) | Hög | 🤖 |
+| [TC-NAV-02](testfall/TC-NAV-02.md) | [Bara ägare ser Fakturering](testfall/TC-NAV-02.md) | Hög | 🤖 |
+| [TC-NAV-03](testfall/TC-NAV-03.md) | [Utse ägare](testfall/TC-NAV-03.md) | Medel | 🤖 |
+| [TC-NAV-04](testfall/TC-NAV-04.md) | [Tid-fliken](testfall/TC-NAV-04.md) | Hög | 🤖 |
+| [TC-NAV-05](testfall/TC-NAV-05.md) | [Ej klart sedan tidigare](testfall/TC-NAV-05.md) | Hög | 🤖 |
 
 ## Fakturering
 

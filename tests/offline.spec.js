@@ -1,4 +1,4 @@
-const { test, expect, bild } = require('./hjalp');
+const { test, expect, bild, flik } = require('./hjalp');
 const { dag } = require('./mock');
 
 test.describe('Offline', () => {
@@ -26,6 +26,7 @@ test.describe('Offline', () => {
     await page.reload();
     await expect(page.locator('#screen-idag')).toBeVisible();
     await expect(page.locator('.job')).toHaveCount(2);
-    await expect(page.locator('#btn-team')).toHaveText('DH');
+    await flik(page, 'Mer');
+    await expect(page.locator('#mer-avatar')).toHaveText('DH');
   });
 });

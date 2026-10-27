@@ -32,9 +32,33 @@
   function show(view) {
     ['loading', 'login', 'app'].forEach((v) => { $('view-' + v).hidden = v !== view; });
   }
+  // Flikraden visas överallt utom på välkomstsidan, i formuläret och på uppdragskortet
+  const FLIK_FOR = { idag: 'idag', karta: 'karta', mintid: 'mintid', mer: 'mer', team: 'mer', tid: 'mer', faktura: 'mer' };
   function screen(name) {
-    ['start', 'idag', 'nytt', 'uppdrag', 'team', 'karta', 'tid', 'faktura'].forEach((s) => { $('screen-' + s).hidden = s !== name; });
+    ['start', 'idag', 'nytt', 'uppdrag', 'team', 'karta', 'tid', 'faktura', 'mintid', 'mer'].forEach((s) => { $('screen-' + s).hidden = s !== name; });
+    const flik = FLIK_FOR[name];
+    $('flikrad').hidden = !flik;
+    document.body.classList.toggle('med-flikar', !!flik);
+    document.querySelectorAll('#flikrad [data-flik]').forEach((a) => {
+      const pa = a.getAttribute('data-flik') === flik;
+      a.classList.toggle('on', pa);
+      if (pa) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
     window.scrollTo(0, 0);
+  }
+
+  function renderMer() {
+    const T = window.ElkollTeam;
+    const jag = T.state.jag;
+    $('mer-avatar').textContent = jag ? U.initialer(jag.namn) : '?';
+    $('mer-namn').textContent = jag ? jag.namn : email;
+    $('mer-team').textContent = T.state.team ? T.state.team.namn : '';
+    const antal = T.state.medlemmar.length - 1;
+    $('mer-team-antal').textContent = antal > 0 ? antal + (antal === 1 ? ' kollega' : ' kollegor') + ' · lägg till, ta bort, bjud in' : 'Lägg till kollegor';
+    $('mer-faktura').hidden = !T.arAgare();
+    const att = window.ElkollUppdrag.lista.filter((r) => r.status === 'klar' && r.debiteras !== false && !r.fakturerad_at).length;
+    $('mer-faktura-antal').hidden = !att;
+    $('mer-faktura-antal').textContent = att;
   }
   function setMsg(text, kind) {
     const el = $('login-msg');
@@ -43,6 +67,11 @@
   }
 
   $('app-version').textContent = 'Elkoll version ' + ((window.ELKOLL_CONFIG || {}).version || '?');
+  $('flikrad').addEventListener('click', (e) => {
+    // Tryck på fliken man redan står på: scrolla till toppen
+    const a = e.target.closest('[data-flik]');
+    if (a && a.classList.contains('on')) window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 
   // ---------- Supabase ----------
   const cfg = window.ELKOLL_CONFIG || {};
@@ -139,6 +168,7 @@
         await window.ElkollTeam.load(email);
         await window.ElkollTid.laddaPagaende();
         await window.ElkollUppdrag.load();
+        if (!$('screen-mer').hidden) renderMer();
       }
     } finally { hamtar = false; }
   }
@@ -151,7 +181,7 @@
     await synka();
   });
 
-  window.ElkollTeam.setup(sb, () => { route(); window.ElkollUppdrag.load(); });
+  window.ElkollTeam.setup(sb, () => { visadVy = ''; route(); window.ElkollUppdrag.load(); });
   window.ElkollUppdrag.setup(sb, { synka });
   window.ElkollFoto.setup(sb, { synka });
   window.ElkollKunder.setup(sb);
@@ -176,7 +206,12 @@
     else if (vy === 'team') { window.ElkollTeam.render(); screen('team'); }
     else if (vy === 'karta') { screen('karta'); window.ElkollUppdrag.visaKarta(); }
     else if (vy === 'tid') { screen('tid'); window.ElkollTid.visaRapport(); }
-    else if (vy === 'faktura') { screen('faktura'); window.ElkollFaktura.visa(); }
+    else if (vy === 'faktura') {
+      if (!window.ElkollTeam.arAgare()) { location.replace('#mer'); return; }
+      screen('faktura'); window.ElkollFaktura.visa();
+    }
+    else if (vy === 'mintid') { screen('mintid'); window.ElkollTid.visaMinVecka(); }
+    else if (vy === 'mer') { renderMer(); screen('mer'); }
     else { window.ElkollUppdrag.render(); screen('idag'); }
   }
   window.addEventListener('hashchange', route);
@@ -193,7 +228,7 @@
     if (userId === session.user.id) return;
     userId = session.user.id;
     email = (session.user.email || '').toLowerCase();
-    $('user-email').textContent = 'Inloggad som ' + email;
+    $('user-email').textContent = email;
     $('start-email').textContent = 'Inloggad som ' + email;
     window.ElkollUppdrag.setUser(userId);
     window.ElkollFoto.setUser(userId);

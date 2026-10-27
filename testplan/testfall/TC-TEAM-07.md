@@ -8,7 +8,7 @@
 | **Prioritet** | Hög |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/team.spec.js`](../../tests/team.spec.js#L68) – *skicka inbjudan öppnar sms med länk och rätt e-post* |
+| **Playwright** | [`tests/team.spec.js`](../../tests/team.spec.js#L69) – *skicka inbjudan öppnar sms med länk och rätt e-post* |
 
 ## Förutsättningar
 

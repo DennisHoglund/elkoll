@@ -1,8 +1,8 @@
-const { test, expect, bild } = require('./hjalp');
+const { test, expect, bild, flik } = require('./hjalp');
 const { dag } = require('./mock');
 
 async function oppnaKarta(page) {
-  await page.getByRole('link', { name: 'Visa på karta' }).click();
+  await flik(page, 'Karta');
   await expect(page.locator('#screen-karta')).toBeVisible();
   await expect(page.locator('#karta .leaflet-tile-loaded').first()).toBeVisible();
 }
@@ -24,7 +24,7 @@ test.describe('Karta', () => {
     await page.locator('#karta-next').click();
     await expect(page.locator('#karta-dag')).not.toHaveText('Idag');
     await expect(page.locator('.pin')).toHaveCount(1);   // u4 geokodas när dagen visas
-    await page.getByRole('link', { name: 'Tillbaka till listan' }).click();
+    await flik(page, 'Uppdrag');
     await expect(page.locator('#screen-idag')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Alla' })).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('[data-dag="' + dag(1) + '"]')).toHaveAttribute('aria-pressed', 'true');

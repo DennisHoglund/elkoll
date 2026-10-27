@@ -8,7 +8,7 @@
 | **Prioritet** | Hög |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/team.spec.js`](../../tests/team.spec.js#L54) – *ta bort kräver två tryck och gör kollegans uppdrag otilldelade* |
+| **Playwright** | [`tests/team.spec.js`](../../tests/team.spec.js#L55) – *ta bort kräver två tryck och gör kollegans uppdrag otilldelade* |
 
 ## Förutsättningar
 

@@ -8,7 +8,7 @@
 | **Prioritet** | Medel |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/inloggning.spec.js`](../../tests/inloggning.spec.js#L47) – *logga ut tar en tillbaka till inloggningen* |
+| **Playwright** | [`tests/inloggning.spec.js`](../../tests/inloggning.spec.js#L48) – *logga ut tar en tillbaka till inloggningen* |
 
 ## Förutsättningar
 

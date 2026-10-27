@@ -8,7 +8,7 @@
 | **Prioritet** | Hög |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/team.spec.js`](../../tests/team.spec.js#L34) – *lägga till en kollega* |
+| **Playwright** | [`tests/team.spec.js`](../../tests/team.spec.js#L35) – *lägga till en kollega* |
 
 ## Förutsättningar
 

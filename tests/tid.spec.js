@@ -72,8 +72,8 @@ test.describe('Tidrapport', () => {
       { id: 't3', team_id: TEAM, uppdrag_id: 'u3', medlem_id: M.maria, start: kl(10, 0), slut: kl(12, 0) }
     );
     await inloggad(page);
-    await page.goto('./#team');
-    await page.getByRole('link', { name: /Tidrapport/ }).click();
+    await page.goto('./#mer');
+    await page.locator('#screen-mer').getByRole('link', { name: /Tidrapport för teamet/ }).click();
     await expect(page.locator('#tid-vecka')).toHaveText(/^Vecka \d+$/);
     const personer = page.locator('.tid-person');
     await expect(personer).toHaveCount(2);

@@ -155,9 +155,15 @@
   window.ElkollFoto.setup(sb, { synka });
 
   // ---------- Navigering (#idag, #nytt, #nytt/ID, #uppdrag/ID, #team) ----------
+  // Senast visade vy. Formulär och uppdragskort byggs inte om när samma vy redan visas –
+  // annars kunde t.ex. en ifylld text eller ett nytt foto försvinna när data laddats klart.
+  let visadVy = '';
   function route() {
-    if (!window.ElkollTeam.state.team) { screen('start'); return; }
+    if (!window.ElkollTeam.state.team) { visadVy = ''; screen('start'); return; }
+    const nyckel = location.hash || '#idag';
     const [vy, id] = (location.hash.replace(/^#/, '') || 'idag').split('/');
+    if (nyckel === visadVy && (vy === 'nytt' || vy === 'uppdrag') && !$('screen-' + vy).hidden) return;
+    visadVy = nyckel;
     const rid = id ? decodeURIComponent(id) : null;
     if (vy !== 'uppdrag') window.ElkollFoto.lamna();
     if (vy !== 'karta') window.ElkollKarta.lamna();
@@ -177,7 +183,7 @@
 
   // ---------- Sessionsstyrning ----------
   async function render(session) {
-    if (!(session && session.user)) { userId = null; show('login'); return; }
+    if (!(session && session.user)) { userId = null; visadVy = ''; show('login'); return; }
     if (userId === session.user.id) return;
     userId = session.user.id;
     email = (session.user.email || '').toLowerCase();

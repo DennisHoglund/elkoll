@@ -8,7 +8,7 @@
 | **Prioritet** | Låg |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/kunder.spec.js`](../../tests/kunder.spec.js#L33) – *inga förslag för okänd kund eller för kort text* |
+| **Playwright** | [`tests/kunder.spec.js`](../../tests/kunder.spec.js#L34) – *inga förslag för okänd kund eller för kort text* |
 
 ## Förutsättningar
 

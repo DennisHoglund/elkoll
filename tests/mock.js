@@ -55,7 +55,8 @@ function exempelData() {
       { id: 'u3', team_id: TEAM, fran: M.dennis, tilldelad: M.maria, datum: dag(0), tid: '10:00', adress: 'Bergsgatan 4, Sundsvall', kund: 'Bo', telefon: '070-555 55 55', portkod: null, lat: 62.3950, lon: 17.2950, uppgift: 'Felsöka jordfel i kök', material: [], saknas: [], fritext: null, status: 'planerad', kommentar: null },
       { id: 'u4', team_id: TEAM, fran: M.kalle, tilldelad: M.dennis, datum: dag(1), tid: '08:00', adress: 'Kyrkogatan 3, Sundsvall', kund: null, telefon: null, portkod: null, uppgift: 'Byta armatur i trapphus', material: [], saknas: [], fritext: null, status: 'planerad', kommentar: null }
     ],
-    elkoll_foto: []
+    elkoll_foto: [],
+    elkoll_tid: []
   };
 }
 
@@ -74,6 +75,8 @@ function filtrera(rows, params) {
     if (op === 'eq') ut = ut.filter((r) => String(r[k]) === val);
     if (op === 'gte') ut = ut.filter((r) => String(r[k]) >= val);
     if (op === 'neq') ut = ut.filter((r) => String(r[k]) !== val);
+    if (op === 'lt') ut = ut.filter((r) => String(r[k]) < val);
+    if (op === 'is' && val === 'null') ut = ut.filter((r) => r[k] == null);
     if (op === 'ilike') {
       const re = new RegExp('^' + val.replace(/\\([%_\\])/g, '$1').replace(/[.+?^${}()|[\]]/g, '\\$&').replace(/[%*]/g, '.*') + '$', 'i');
       ut = ut.filter((r) => re.test(String(r[k] || '')));
@@ -199,7 +202,10 @@ async function mocka(page, { data = exempelData(), tolkning = TOLKNING } = {}) {
         const bort = new Set(filtrera(rows, url.searchParams).map((r) => r.id));
         api.db[tabell] = rows.filter((r) => !bort.has(r.id));
         // som i databasen: borttagen medlem → uppdragen blir otilldelade
-        if (tabell === 'elkoll_uppdrag') api.db.elkoll_foto = api.db.elkoll_foto.filter((f) => !bort.has(f.uppdrag_id));
+        if (tabell === 'elkoll_uppdrag') {
+          api.db.elkoll_foto = api.db.elkoll_foto.filter((f) => !bort.has(f.uppdrag_id));
+          api.db.elkoll_tid = api.db.elkoll_tid.filter((t) => !bort.has(t.uppdrag_id));
+        }
         if (tabell === 'elkoll_medlem') api.db.elkoll_uppdrag.forEach((u) => { if (bort.has(u.tilldelad)) u.tilldelad = null; if (bort.has(u.fran)) u.fran = null; });
         return route.fulfill({ status: 204, headers: cors() });
       }

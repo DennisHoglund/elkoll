@@ -8,7 +8,7 @@
 | **Prioritet** | Hög |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/kunder.spec.js`](../../tests/kunder.spec.js#L21) – *adressfältet föreslår tidigare adresser* |
+| **Playwright** | [`tests/kunder.spec.js`](../../tests/kunder.spec.js#L22) – *adressfältet föreslår tidigare adresser* |
 
 ## Förutsättningar
 

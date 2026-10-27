@@ -203,6 +203,25 @@
       <div id="karta-kort" class="karta-kort" hidden></div>
     </section>
 
+    <!-- Tidrapport -->
+    <section id="screen-tid" class="screen" hidden>
+      <header class="bar">
+        <a class="back" href="#team">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          Teamet
+        </a>
+      </header>
+      <header class="head">
+        <h1>Tidrapport</h1>
+        <div class="row-between vecka-val">
+          <button type="button" class="icon-btn" id="tid-prev" aria-label="Föregående vecka"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+          <div class="vecka-text"><strong id="tid-vecka"></strong><span class="muted small" id="tid-period"></span></div>
+          <button type="button" class="icon-btn" id="tid-next" aria-label="Nästa vecka"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+      </header>
+      <div class="pad stack" id="tid-rapport" aria-live="polite"></div>
+    </section>
+
     <!-- Teamet -->
     <section id="screen-team" class="screen" hidden>
       <header class="bar">
@@ -231,6 +250,11 @@
           <p class="muted small">Kollegan skapar sedan ett konto i Elkoll med samma e-post och kommer direkt in i teamet.</p>
         </form>
 
+        <a class="card tid-lank" href="#tid">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg>
+          <span><strong>Tidrapport</strong><span class="muted small">Tid per person och dag, vecka för vecka</span></span>
+        </a>
+
         <div class="card stack">
           <div class="row-between">
             <span>Utseende</span>
@@ -252,6 +276,7 @@
   <script src="util.js"></script>
   <script src="ko.js"></script>
   <script src="team.js"></script>
+  <script src="tid.js"></script>
   <script src="kunder.js"></script>
   <script src="karta.js"></script>
   <script src="foto.js"></script>

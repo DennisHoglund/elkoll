@@ -5,9 +5,9 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 
 | | |
 |---|---|
-| **Testfall** | 52 |
-| **Automatiserade** | 46 (körs på iPhone/WebKit och Android/Chromium) |
-| **Manuella** | 6 (kräver riktig iPhone eller riktig backend) |
+| **Testfall** | 58 |
+| **Automatiserade** | 51 (körs på iPhone/WebKit och Android/Chromium) |
+| **Manuella** | 7 (kräver riktig iPhone eller riktig backend) |
 | **Senaste testrapport** | [dennishoglund.github.io/elkoll/rapport/](https://dennishoglund.github.io/elkoll/rapport/) |
 | **Krav** | [SPEC.md](../SPEC.md) |
 
@@ -56,6 +56,17 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 | [TC-UPP-12](testfall/TC-UPP-12.md) | [Diktera med tangentbordet](testfall/TC-UPP-12.md) | Hög | 🖐️ |
 | [TC-UPP-13](testfall/TC-UPP-13.md) | [Riktig tolkning med Gemini](testfall/TC-UPP-13.md) | Hög | 🖐️ |
 | [TC-UPP-14](testfall/TC-UPP-14.md) | [Tolkningen hänger aldrig](testfall/TC-UPP-14.md) | Hög | 🤖 |
+
+## Tidrapport
+
+| ID | Testfall | Prio | Typ |
+|---|---|---|---|
+| [TC-TID-01](testfall/TC-TID-01.md) | [Starta och stoppa tid](testfall/TC-TID-01.md) | Hög | 🤖 |
+| [TC-TID-02](testfall/TC-TID-02.md) | [Bara en pågående tid per person](testfall/TC-TID-02.md) | Hög | 🤖 |
+| [TC-TID-03](testfall/TC-TID-03.md) | [Klar stoppar tiden](testfall/TC-TID-03.md) | Medel | 🤖 |
+| [TC-TID-04](testfall/TC-TID-04.md) | [Tid i efterhand](testfall/TC-TID-04.md) | Medel | 🤖 |
+| [TC-TID-05](testfall/TC-TID-05.md) | [Veckorapport](testfall/TC-TID-05.md) | Hög | 🤖 |
+| [TC-TID-06](testfall/TC-TID-06.md) | [Tid utan täckning](testfall/TC-TID-06.md) | Medel | 🖐️ |
 
 ## Kundregister
 

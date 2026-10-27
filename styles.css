@@ -329,3 +329,27 @@ p { margin: 0; }
 .forslag .forslag-antal { grid-area: antal; align-self: center; padding: 2px 8px; border-radius: 8px; background: var(--yta2); color: var(--text2); font-weight: 700; font-size: 12px; }
 /* Fält och kundförslag ska inte hamna bakom den fasta Spara-knappen när de scrollas fram */
 #form-uppdrag input, #form-uppdrag textarea, .forslag { scroll-margin-bottom: 120px; }
+
+/* ---------- Tidrapport ---------- */
+.tid-knapp { position: relative; }
+.tid-puls { width: 12px; height: 12px; border-radius: 6px; background: #E5484D; animation: puls 1.4s ease-in-out infinite; }
+@keyframes puls { 50% { opacity: .35; } }
+.tid-totalt { font-weight: 800; font-size: 15px; }
+.tid-lista { list-style: none; margin: 0; padding: 0; }
+.tid-lista li { display: grid; grid-template-columns: 1fr auto auto; grid-template-areas: "vem langd knapp" "nar langd knapp"; gap: 2px 10px; align-items: center; padding: 10px 0; border-top: 1px solid var(--kant); }
+.tid-vem { grid-area: vem; font-weight: 700; }
+.tid-lista .muted { grid-area: nar; }
+.tid-langd { grid-area: langd; font-weight: 700; }
+.tid-lista .icon-btn { grid-area: knapp; }
+.tid-manuell summary { min-height: 44px; display: flex; align-items: center; font-weight: 700; color: var(--text2); cursor: pointer; }
+.tid-manuell[open] { display: flex; flex-direction: column; gap: 10px; }
+.chip.tid { background: #FDE2E1; color: #9B1C1C; }
+:root[data-theme="dark"] .chip.tid { background: #4A1F1C; color: #F2B8B5; }
+.tid-lank { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--text); min-height: 64px; }
+.tid-lank > span { display: flex; flex-direction: column; gap: 2px; }
+.vecka-val { margin-top: 12px; }
+.vecka-text { display: flex; flex-direction: column; align-items: center; }
+.tid-person { display: flex; flex-direction: column; gap: 8px; }
+.tid-dag { border-top: 1px solid var(--kant); padding-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+.tid-rad { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; min-height: 40px; align-items: center; text-decoration: none; color: var(--text2); font-size: 14px; }
+.tid-rad-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

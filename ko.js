@@ -31,7 +31,7 @@ window.ElkollKo = (function () {
     });
   }
 
-  // item: { id, userId, op: 'upsert' | 'delete' | 'foto' | 'foto-delete', row, data?, created }
+  // item: { id, userId, op: 'upsert' | 'delete' | 'foto' | 'foto-delete' | 'tid' | 'tid-delete', row, data?, created }
   // Foton ligger som ArrayBuffer (data), aldrig Blob – Safari klarar inte Blob i IndexedDB överallt.
   const put = (item) => tx('readwrite', (s) => s.put(item));
   const del = (id) => tx('readwrite', (s) => s.delete(id));
@@ -55,6 +55,10 @@ window.ElkollKo = (function () {
             const up = await sb.storage.from('elkoll-foton').upload(item.row.path, blob, { contentType: 'image/jpeg', upsert: true });
             if (up.error) throw up.error;
             res = await sb.from('elkoll_foto').upsert(item.row, { onConflict: 'id' });
+          } else if (item.op === 'tid') {
+            res = await sb.from('elkoll_tid').upsert(item.row, { onConflict: 'id' });
+          } else if (item.op === 'tid-delete') {
+            res = await sb.from('elkoll_tid').delete().eq('id', item.id);
           } else if (item.op === 'foto-delete') {
             res = await sb.from('elkoll_foto').delete().eq('id', item.id);
             if (!res.error) {

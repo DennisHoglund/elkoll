@@ -123,6 +123,36 @@ grant select, insert, update, delete on public.elkoll_team, public.elkoll_medlem
 grant select, insert, update, delete on public.elkoll_team, public.elkoll_medlem, public.elkoll_uppdrag to service_role;
 
 -- ---------------------------------------------------------------------------
+-- Tidrapport: en rad per arbetspass på ett uppdrag. slut = null betyder att tiden pågår.
+create table if not exists public.elkoll_tid (
+  id          text primary key,                                   -- skapas i appen, så tid kan rapporteras offline
+  team_id     uuid not null references public.elkoll_team(id) on delete cascade,
+  uppdrag_id  text not null references public.elkoll_uppdrag(id) on delete cascade,
+  medlem_id   uuid references public.elkoll_medlem(id) on delete set null,
+  start       timestamptz not null,
+  slut        timestamptz check (slut is null or slut >= start),
+  created_at  timestamptz not null default now()
+);
+create index if not exists elkoll_tid_team_start on public.elkoll_tid (team_id, start);
+create index if not exists elkoll_tid_uppdrag on public.elkoll_tid (uppdrag_id);
+
+alter table public.elkoll_tid enable row level security;
+drop policy if exists "elkoll_tid_select" on public.elkoll_tid;
+drop policy if exists "elkoll_tid_insert" on public.elkoll_tid;
+drop policy if exists "elkoll_tid_update" on public.elkoll_tid;
+drop policy if exists "elkoll_tid_delete" on public.elkoll_tid;
+create policy "elkoll_tid_select" on public.elkoll_tid for select to authenticated
+  using (team_id in (select public.elkoll_mina_team()));
+create policy "elkoll_tid_insert" on public.elkoll_tid for insert to authenticated
+  with check (team_id in (select public.elkoll_mina_team()));
+create policy "elkoll_tid_update" on public.elkoll_tid for update to authenticated
+  using (team_id in (select public.elkoll_mina_team())) with check (team_id in (select public.elkoll_mina_team()));
+create policy "elkoll_tid_delete" on public.elkoll_tid for delete to authenticated
+  using (team_id in (select public.elkoll_mina_team()));
+revoke all on public.elkoll_tid from anon;
+grant select, insert, update, delete on public.elkoll_tid to authenticated, service_role;
+
+-- ---------------------------------------------------------------------------
 -- Foton (dokumentation på plats). Filen ligger i bucketen elkoll-foton under
 -- <team_id>/<uppdrag_id>/<foto_id>.jpg, raden här talar om vilket uppdrag och före/efter.
 create table if not exists public.elkoll_foto (

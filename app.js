@@ -33,7 +33,7 @@
     ['loading', 'login', 'app'].forEach((v) => { $('view-' + v).hidden = v !== view; });
   }
   function screen(name) {
-    ['start', 'idag', 'nytt', 'uppdrag', 'team', 'karta'].forEach((s) => { $('screen-' + s).hidden = s !== name; });
+    ['start', 'idag', 'nytt', 'uppdrag', 'team', 'karta', 'tid'].forEach((s) => { $('screen-' + s).hidden = s !== name; });
     window.scrollTo(0, 0);
   }
   function setMsg(text, kind) {
@@ -137,6 +137,7 @@
       await synka();
       if (navigator.onLine) {
         await window.ElkollTeam.load(email);
+        await window.ElkollTid.laddaPagaende();
         await window.ElkollUppdrag.load();
       }
     } finally { hamtar = false; }
@@ -154,6 +155,7 @@
   window.ElkollUppdrag.setup(sb, { synka });
   window.ElkollFoto.setup(sb, { synka });
   window.ElkollKunder.setup(sb);
+  window.ElkollTid.setup(sb, { synka });
 
   // ---------- Navigering (#idag, #nytt, #nytt/ID, #uppdrag/ID, #team) ----------
   // Senast visade vy. Formulär och uppdragskort byggs inte om när samma vy redan visas –
@@ -166,12 +168,13 @@
     if (nyckel === visadVy && (vy === 'nytt' || vy === 'uppdrag') && !$('screen-' + vy).hidden) return;
     visadVy = nyckel;
     const rid = id ? decodeURIComponent(id) : null;
-    if (vy !== 'uppdrag') window.ElkollFoto.lamna();
+    if (vy !== 'uppdrag') { window.ElkollFoto.lamna(); window.ElkollTid.lamna(); }
     if (vy !== 'karta') window.ElkollKarta.lamna();
     if (vy === 'nytt') { window.ElkollUppdrag.openNytt(rid); screen('nytt'); }
     else if (vy === 'uppdrag' && rid) { window.ElkollUppdrag.openKort(rid); screen('uppdrag'); }
     else if (vy === 'team') { window.ElkollTeam.render(); screen('team'); }
     else if (vy === 'karta') { screen('karta'); window.ElkollUppdrag.visaKarta(); }
+    else if (vy === 'tid') { screen('tid'); window.ElkollTid.visaRapport(); }
     else { window.ElkollUppdrag.render(); screen('idag'); }
   }
   window.addEventListener('hashchange', route);
@@ -192,12 +195,14 @@
     $('start-email').textContent = 'Inloggad som ' + email;
     window.ElkollUppdrag.setUser(userId);
     window.ElkollFoto.setUser(userId);
+    window.ElkollTid.setUser(userId);
     show('app');
     const teamRes = await window.ElkollTeam.load(email);
     if (!teamRes.ok && !teamRes.offline) {
       const saknas = teamRes.error && (teamRes.error.code === '42P01' || /does not exist/i.test(teamRes.error.message || ''));
       U.toast(saknas ? 'Tabellerna saknas – kör supabase/schema.sql.' : 'Kunde inte hämta teamet: ' + teamRes.error.message, 'error', 6000);
     }
+    await window.ElkollTid.laddaPagaende();
     const res = await window.ElkollUppdrag.load();
     route();
     if (teamRes.offline || res.offline) U.toast('Ingen täckning – visar sparade uppdrag', 'ok', 3000);

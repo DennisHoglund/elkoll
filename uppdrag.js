@@ -185,6 +185,7 @@ window.ElkollUppdrag = (function () {
     if (r.status !== 'planerad') chips.push('<span class="chip ' + r.status + '">' + STATUS[r.status] + '</span>');
     if (filter === 'alla') chips.push('<span class="chip">' + (tillNamn ? 'Till ' + esc(tillNamn) : 'Otilldelad') + '</span>');
     saknasNu(r).forEach((f) => chips.push('<span class="chip warn">' + IKON.varn + FALT_NAMN[f] + ' saknas</span>'));
+    if (window.ElkollTid && window.ElkollTid.pagarId() === r.id) chips.push('<span class="chip tid">Tid pågår</span>');
     if (r._vantar) chips.push('<span class="chip">Väntar på täckning</span>');
     return '<a class="job' + (r.status === 'klar' ? ' done' : '') + '" href="#uppdrag/' + encodeURIComponent(r.id) + '">' +
       '<span class="job-nr" aria-hidden="true">' + nr + '</span>' +
@@ -408,6 +409,7 @@ window.ElkollUppdrag = (function () {
       (r.material && r.material.length ? '<div class="card"><h2>Material att ta med</h2><div class="checks">' +
         r.material.map((m, i) => '<label class="check"><input type="checkbox" data-bock="' + i + '"' + (b.includes(i) ? ' checked' : '') + '> ' + esc(m) + '</label>').join('') +
         '</div></div>' : '') +
+      '<div class="card form stack" id="tid-yta"></div>' +
       '<div class="card form stack" id="dokumentation"><h2>Dokumentation</h2>' +
         '<div id="foto-yta"></div>' +
         '<label for="kort-anteckning">Anteckningar</label>' +
@@ -422,6 +424,7 @@ window.ElkollUppdrag = (function () {
         '<button class="btn ghost danger" type="button" data-radera>Ta bort</button>' +
       '</div>';
     window.ElkollFoto.visa(r, $('foto-yta'));
+    window.ElkollTid.visa(r, $('tid-yta'));
     visaPlatsminne(r);
   }
 
@@ -502,6 +505,8 @@ window.ElkollUppdrag = (function () {
     if (st) {
       const status = st.getAttribute('data-status');
       if (status === r.status) return;
+      // Klar: stoppa min pågående tid på uppdraget
+      if (status === 'klar' && window.ElkollTid.pagarId() === r.id) await window.ElkollTid.stoppa();
       const row = Object.assign({}, r, { status, updated_at: new Date().toISOString() });
       delete row._vantar;
       await sparaRad(row);

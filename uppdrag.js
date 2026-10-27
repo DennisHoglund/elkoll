@@ -432,11 +432,17 @@ window.ElkollUppdrag = (function () {
     const x = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLon / 2) ** 2;
     return 2 * R * Math.asin(Math.sqrt(x));
   }
-  // Samma gata och nummer – och om båda har plats, högst 300 m ifrån varandra (samma gatunamn finns i flera orter)
+  // Ort = det efter första kommatecknet, utan postnummer ("852 30 Sundsvall" → "sundsvall")
+  function ort(adress) {
+    const delar = String(adress || '').split(',');
+    return delar.length > 1 ? delar.slice(1).join(' ').replace(/\d/g, '').replace(/\s+/g, ' ').trim().toLowerCase() : '';
+  }
+  // Samma gata och nummer. Står orten med på båda måste den också stämma (samma gatunamn finns i flera orter).
+  // Koordinaterna används inte – en adress utan ort kan ha slagits upp till fel stad.
   function sammaPlats(a, b) {
-    if (gata(a.adress).toLowerCase() !== gata(b.adress).toLowerCase()) return false;
-    if (a.lat != null && b.lat != null) return avstandM(a, b) < 300;
-    return true;
+    if (gata(a.adress).toLowerCase().replace(/\s/g, '') !== gata(b.adress).toLowerCase().replace(/\s/g, '')) return false;
+    const oa = ort(a.adress), ob = ort(b.adress);
+    return !oa || !ob || oa === ob;
   }
 
   async function tidigareBesok(r) {
@@ -445,11 +451,13 @@ window.ElkollUppdrag = (function () {
     let rader = lista;
     if (navigator.onLine) {
       try {
-        const monster = g.replace(/[%_\\]/g, (c) => '\\' + c) + '%';
+        // Hämta på gatunamnet (utan nummer) och jämför exakt här – "Storgatan 12" och "Storgatan12" ska räknas lika
+        const namn = g.replace(/\s*\d.*$/, '') || g;
+        const monster = namn.replace(/[%_\\]/g, (c) => '\\' + c) + '%';
         const { data, error } = await sb.from('elkoll_uppdrag')
           .select('id, datum, tid, adress, lat, lon, uppgift, status, kommentar, tilldelad')
           .eq('team_id', r.team_id).neq('id', r.id).ilike('adress', monster)
-          .order('datum', { ascending: false }).limit(30);
+          .order('datum', { ascending: false }).limit(100);
         if (!error && data) rader = data.concat(lista.filter((x) => !data.some((d) => d.id === x.id)));
       } catch (e) { /* använd det som finns lokalt */ }
     }

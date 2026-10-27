@@ -7,7 +7,8 @@ function besok(api, extra) {
 
 test.describe('Platsminne', () => {
   test('visar tidigare besök på samma adress med anteckningar', { annotation: { type: 'testfall', description: 'TC-MIN-01' } }, async ({ idag: page, api }) => {
-    api.db.elkoll_uppdrag.push(besok(api, { id: 'gammal', datum: dag(-120), adress: 'Storgatan 12, 852 30 Sundsvall', lat: 62.3909, lon: 17.3070, uppgift: 'Felsöka säkringar', kommentar: 'Elcentralen sitter i hallgarderoben.' }));
+    // Skrivet utan mellanslag och med postnummer – ska ändå räknas som samma adress
+    api.db.elkoll_uppdrag.push(besok(api, { id: 'gammal', datum: dag(-120), adress: 'storgatan12, 852 30 Sundsvall', lat: 59.0, lon: 15.0, uppgift: 'Felsöka säkringar', kommentar: 'Elcentralen sitter i hallgarderoben.' }));
     // Samma gata i en annan ort ska inte räknas
     api.db.elkoll_uppdrag.push(besok(api, { id: 'annan-ort', datum: dag(-30), adress: 'Storgatan 12, Härnösand', lat: 62.6323, lon: 17.9379, uppgift: 'Byta uttag', kommentar: null }));
     await page.locator('.job').filter({ hasText: 'Byta elcentral' }).click();

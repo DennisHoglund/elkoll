@@ -38,7 +38,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 
 ### 4.8 Platsminne
 - På uppdragskortet: *Varit här förut: N besök* (eller *N andra besök på adressen* om de är kommande). Tryck för datum, uppgift, vem, status och anteckningar; tryck på ett besök för att öppna det.
-- Matchning: samma gata och nummer (delen före första kommatecknet, skiftlägesokänsligt). Har båda uppdragen plats krävs < 300 m, så samma gatunamn i en annan ort räknas inte.
+- Matchning: samma gata och nummer (delen före första kommatecknet, utan hänsyn till skiftläge och mellanslag). Står orten med i båda adresserna måste den stämma (postnummer ignoreras), så samma gatunamn i en annan ort räknas inte. Koordinater används inte – de kan vara fel för adresser utan ort.
 - Hämtas från servern (hela historiken, max 30) med lokal lista som reserv utan täckning. Uppdrag äldre än 60 dagar hämtas när de öppnas.
 
 ### 4.7 Karta per datum (steg 4)

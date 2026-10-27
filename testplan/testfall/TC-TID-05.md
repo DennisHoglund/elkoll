@@ -8,7 +8,7 @@
 | **Prioritet** | Hög |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/tid.spec.js`](../../tests/tid.spec.js#L64) – *veckorapport per person och dag* |
+| **Playwright** | [`tests/tid.spec.js`](../../tests/tid.spec.js#L66) – *veckorapport per person och dag* |
 
 ## Förutsättningar
 

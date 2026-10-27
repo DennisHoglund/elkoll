@@ -36,6 +36,12 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 - Navigera (Apple Kartor på iPhone, annars Google Maps), Ring kund, På väg-sms, Ring avsändaren.
 - Kunduppgifter, portkod i stor stil, avsändarens originaltext, materiallista att bocka av (sparas lokalt), status Planerad/Klar/Återbesök, Ändra, Ta bort (två tryck).
 
+### 4.11 Fakturering (underlag)
+- Teamet → **Fakturering**: flikarna *Att fakturera (N)* och *Fakturerade*. Klara uppdrag grupperade per kund (namn, annars adress) med tid totalt och per person, material, anteckningar och **Öppna**.
+- **Markera fakturerad** sätter `fakturerad_at`; **Ångra** nollställer. Uppdragskortet visar *Fakturerad {datum}*.
+- **Debiteras inte** (kryssruta under Status) sätter `debiteras = false` för garanti/internt arbete – sådana uppdrag hamnar aldrig under Att fakturera.
+- Elkoll gör inga fakturor eller priser; underlaget förs in i kundens bokföringsprogram. Export till fil och ev. Fortnox-koppling är nästa steg.
+
 ### 4.10 Tidrapport
 - På uppdragskortet: **Starta tid** / **Stoppa · 0:42** (klockan uppdateras), lista över pass (vem, när, längd) och totalt. Lägg till tid i efterhand (från–till, datum) och ta bort egna pass med två tryck.
 - En pågående tid per person: startar man på ett annat uppdrag stoppas den förra. **Klar** stoppar tiden. Listan visar chipet *Tid pågår*.
@@ -67,7 +73,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 ## 5. Datamodell (`supabase/schema.sql`)
 - `elkoll_team(id, namn, skapad_av)`
 - `elkoll_medlem(id, team_id, namn, telefon, epost)` – unik per team och e-post.
-- `elkoll_uppdrag(id text, team_id, skapad_av, fran, tilldelad, datum, tid, adress, lat, lon, kund, telefon, portkod, uppgift, material[], saknas[], fritext, status, kommentar)`
+- `elkoll_uppdrag(id text, team_id, skapad_av, fran, tilldelad, datum, tid, adress, lat, lon, debiteras, fakturerad_at, kund, telefon, portkod, uppgift, material[], saknas[], fritext, status, kommentar)`
 - `elkoll_tid(id text, team_id, uppdrag_id, medlem_id, start, slut)` – tidrapport.
 - `elkoll_foto(id text, uppdrag_id, team_id, typ fore|efter, path, skapad_av)` + bucket `elkoll-foton` (storage-policies på första mappnivån = team).
 - RLS: funktionen `elkoll_mina_team()` ger team där inloggningens e-post finns i `elkoll_medlem`. Allt filtreras på den. `anon` får inget.
@@ -80,7 +86,7 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 
 ## 7. Tester
 - Playwright, iPhone 14 (WebKit) och Pixel 7 (Chromium). Supabase, tolkningsfunktionen, CDN och typsnitt mockas i `tests/mock.js`.
-- Testplan i `testplan/` (58 testfall, 51 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
+- Testplan i `testplan/` (62 testfall, 55 automatiserade). Rapport: https://dennishoglund.github.io/elkoll/rapport/
 
 ## 8. Beslut
 - Inloggning med lösenord i stället för magisk länk – delat projekt utan egen SMTP.

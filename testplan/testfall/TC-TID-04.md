@@ -8,7 +8,7 @@
 | **Prioritet** | Medel |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/tid.spec.js`](../../tests/tid.spec.js#L48) – *lägga till och ta bort tid i efterhand* |
+| **Playwright** | [`tests/tid.spec.js`](../../tests/tid.spec.js#L50) – *lägga till och ta bort tid i efterhand* |
 
 ## Förutsättningar
 

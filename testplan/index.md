@@ -5,8 +5,8 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 
 | | |
 |---|---|
-| **Testfall** | 58 |
-| **Automatiserade** | 51 (körs på iPhone/WebKit och Android/Chromium) |
+| **Testfall** | 62 |
+| **Automatiserade** | 55 (körs på iPhone/WebKit och Android/Chromium) |
 | **Manuella** | 7 (kräver riktig iPhone eller riktig backend) |
 | **Senaste testrapport** | [dennishoglund.github.io/elkoll/rapport/](https://dennishoglund.github.io/elkoll/rapport/) |
 | **Krav** | [SPEC.md](../SPEC.md) |
@@ -67,6 +67,15 @@ Automatiserade testfall körs dessutom av Playwright vid varje commit och är ko
 | [TC-TID-04](testfall/TC-TID-04.md) | [Tid i efterhand](testfall/TC-TID-04.md) | Medel | 🤖 |
 | [TC-TID-05](testfall/TC-TID-05.md) | [Veckorapport](testfall/TC-TID-05.md) | Hög | 🤖 |
 | [TC-TID-06](testfall/TC-TID-06.md) | [Tid utan täckning](testfall/TC-TID-06.md) | Medel | 🖐️ |
+
+## Fakturering
+
+| ID | Testfall | Prio | Typ |
+|---|---|---|---|
+| [TC-FAK-01](testfall/TC-FAK-01.md) | [Fakturaunderlag per kund](testfall/TC-FAK-01.md) | Hög | 🤖 |
+| [TC-FAK-02](testfall/TC-FAK-02.md) | [Markera fakturerad](testfall/TC-FAK-02.md) | Hög | 🤖 |
+| [TC-FAK-03](testfall/TC-FAK-03.md) | [Debiteras inte](testfall/TC-FAK-03.md) | Medel | 🤖 |
+| [TC-FAK-04](testfall/TC-FAK-04.md) | [Fakturerad syns på uppdraget](testfall/TC-FAK-04.md) | Låg | 🤖 |
 
 ## Kundregister
 

@@ -1,5 +1,5 @@
 // Höj versionen vid varje deploy så att telefonen hämtar nya filer.
-const CACHE = 'elkoll-v14';
+const CACHE = 'elkoll-v15';
 
 const SHELL = [
   './',
@@ -10,6 +10,7 @@ const SHELL = [
   './ko.js',
   './team.js',
   './tid.js',
+  './faktura.js',
   './kunder.js',
   './karta.js',
   './foto.js',

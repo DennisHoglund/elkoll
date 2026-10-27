@@ -203,6 +203,27 @@
       <div id="karta-kort" class="karta-kort" hidden></div>
     </section>
 
+    <!-- Fakturering -->
+    <section id="screen-faktura" class="screen" hidden>
+      <header class="bar">
+        <a class="back" href="#team">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          Teamet
+        </a>
+      </header>
+      <header class="head">
+        <h1>Fakturering</h1>
+        <p class="muted">Underlag för fakturor – själva fakturan görs i bokföringen.</p>
+      </header>
+      <div class="pad">
+        <div class="seg" role="group" aria-label="Visa">
+          <button type="button" id="fak-att" aria-pressed="true">Att fakturera</button>
+          <button type="button" id="fak-klara" aria-pressed="false">Fakturerade</button>
+        </div>
+      </div>
+      <div class="pad stack" id="fak-lista" aria-live="polite" style="margin-top: 14px"></div>
+    </section>
+
     <!-- Tidrapport -->
     <section id="screen-tid" class="screen" hidden>
       <header class="bar">
@@ -250,6 +271,11 @@
           <p class="muted small">Kollegan skapar sedan ett konto i Elkoll med samma e-post och kommer direkt in i teamet.</p>
         </form>
 
+        <a class="card tid-lank" href="#faktura">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h8M9 17h8"/></svg>
+          <span><strong>Fakturering</strong><span class="muted small">Klara uppdrag att fakturera, per kund</span></span>
+        </a>
+
         <a class="card tid-lank" href="#tid">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg>
           <span><strong>Tidrapport</strong><span class="muted small">Tid per person och dag, vecka för vecka</span></span>
@@ -277,6 +303,7 @@
   <script src="ko.js"></script>
   <script src="team.js"></script>
   <script src="tid.js"></script>
+  <script src="faktura.js"></script>
   <script src="kunder.js"></script>
   <script src="karta.js"></script>
   <script src="foto.js"></script>

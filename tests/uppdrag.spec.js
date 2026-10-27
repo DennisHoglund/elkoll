@@ -128,7 +128,7 @@ test.describe('Uppdragskort', () => {
     await page.getByRole('button', { name: 'Klar', exact: true }).click();
     await expect(page.locator('#kort-status')).toHaveText('Klar');
     await expect.poll(() => api.db.elkoll_uppdrag.find((u) => u.id === 'u1').status).toBe('klar');
-    await page.getByRole('link', { name: 'Uppdrag' }).click();
+    await page.getByRole('link', { name: 'Uppdrag', exact: true }).click();
     await expect(page.locator('.job').filter({ hasText: 'Byta elcentral' })).toHaveClass(/done/);
   });
 

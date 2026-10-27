@@ -8,7 +8,7 @@
 | **Prioritet** | Medel |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/tid.spec.js`](../../tests/tid.spec.js#L40) – *markera klar stoppar tiden* |
+| **Playwright** | [`tests/tid.spec.js`](../../tests/tid.spec.js#L42) – *markera klar stoppar tiden* |
 
 ## Förutsättningar
 

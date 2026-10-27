@@ -33,7 +33,7 @@
     ['loading', 'login', 'app'].forEach((v) => { $('view-' + v).hidden = v !== view; });
   }
   function screen(name) {
-    ['start', 'idag', 'nytt', 'uppdrag', 'team', 'karta', 'tid'].forEach((s) => { $('screen-' + s).hidden = s !== name; });
+    ['start', 'idag', 'nytt', 'uppdrag', 'team', 'karta', 'tid', 'faktura'].forEach((s) => { $('screen-' + s).hidden = s !== name; });
     window.scrollTo(0, 0);
   }
   function setMsg(text, kind) {
@@ -156,6 +156,7 @@
   window.ElkollFoto.setup(sb, { synka });
   window.ElkollKunder.setup(sb);
   window.ElkollTid.setup(sb, { synka });
+  window.ElkollFaktura.setup(sb);
 
   // ---------- Navigering (#idag, #nytt, #nytt/ID, #uppdrag/ID, #team) ----------
   // Senast visade vy. Formulär och uppdragskort byggs inte om när samma vy redan visas –
@@ -175,6 +176,7 @@
     else if (vy === 'team') { window.ElkollTeam.render(); screen('team'); }
     else if (vy === 'karta') { screen('karta'); window.ElkollUppdrag.visaKarta(); }
     else if (vy === 'tid') { screen('tid'); window.ElkollTid.visaRapport(); }
+    else if (vy === 'faktura') { screen('faktura'); window.ElkollFaktura.visa(); }
     else { window.ElkollUppdrag.render(); screen('idag'); }
   }
   window.addEventListener('hashchange', route);

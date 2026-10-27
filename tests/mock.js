@@ -76,6 +76,10 @@ function filtrera(rows, params) {
     if (op === 'gte') ut = ut.filter((r) => String(r[k]) >= val);
     if (op === 'neq') ut = ut.filter((r) => String(r[k]) !== val);
     if (op === 'lt') ut = ut.filter((r) => String(r[k]) < val);
+    if (op === 'in') {
+      const varden = val.replace(/^\(|\)$/g, '').split(',').map((x) => x.replace(/^"|"$/g, ''));
+      ut = ut.filter((r) => varden.includes(String(r[k])));
+    }
     if (op === 'is' && val === 'null') ut = ut.filter((r) => r[k] == null);
     if (op === 'ilike') {
       const re = new RegExp('^' + val.replace(/\\([%_\\])/g, '$1').replace(/[.+?^${}()|[\]]/g, '\\$&').replace(/[%*]/g, '.*') + '$', 'i');

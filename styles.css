@@ -353,3 +353,13 @@ p { margin: 0; }
 .tid-dag { border-top: 1px solid var(--kant); padding-top: 8px; display: flex; flex-direction: column; gap: 4px; }
 .tid-rad { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; min-height: 40px; align-items: center; text-decoration: none; color: var(--text2); font-size: 14px; }
 .tid-rad-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- Fakturering ---------- */
+.fak-kund { display: flex; flex-direction: column; gap: 10px; }
+.fak-uppdrag { display: flex; flex-direction: column; gap: 4px; padding-top: 12px; border-top: 1px solid var(--kant); }
+.fak-uppdrag .chip { align-self: flex-start; }
+.fak-uppdrag .grid2 { margin-top: 8px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr); }
+.fak-uppdrag .btn { font-size: 16px; padding: 0 12px; white-space: nowrap; }
+.fak-tid { font-weight: 700; font-size: 15px; }
+.fak-not { white-space: pre-wrap; }
+.fak-badge { align-self: flex-start; padding: 6px 12px; border-radius: 10px; background: var(--ok-bg); color: var(--ok); font-weight: 700; font-size: 14px; }

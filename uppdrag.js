@@ -418,7 +418,10 @@ window.ElkollUppdrag = (function () {
       '</div>' +
       '<div class="card stack"><h2>Status</h2><div class="seg3">' +
         ['planerad', 'klar', 'aterbesok'].map((s) => '<button type="button" data-status="' + s + '" aria-pressed="' + (r.status === s) + '">' + STATUS[s] + '</button>').join('') +
-      '</div></div>' +
+      '</div>' +
+        '<label class="check"><input type="checkbox" data-debiteras-inte' + (r.debiteras === false ? ' checked' : '') + '> Debiteras inte (garanti, internt arbete)</label>' +
+        (r.fakturerad_at ? '<p class="fak-badge">Fakturerad ' + esc(U.kortDag(U.isoDag(new Date(r.fakturerad_at)))) + '</p>' : '') +
+      '</div>' +
       '<div class="grid2">' +
         '<a class="btn ghost" href="#nytt/' + encodeURIComponent(r.id) + '">Ändra</a>' +
         '<button class="btn ghost danger" type="button" data-radera>Ta bort</button>' +
@@ -501,6 +504,13 @@ window.ElkollUppdrag = (function () {
       U.store.setJson('elkoll-bockat-' + id, [...set]);
       return;
     }
+    const deb = e.target.closest('[data-debiteras-inte]');
+    if (deb) {
+      const row = Object.assign({}, r, { debiteras: !deb.checked, updated_at: new Date().toISOString() });
+      delete row._vantar;
+      await sparaRad(row);
+      return;
+    }
     const st = e.target.closest('[data-status]');
     if (st) {
       const status = st.getAttribute('data-status');
@@ -535,5 +545,7 @@ window.ElkollUppdrag = (function () {
     }
   }
 
-  return { setup, setUser, load, render, openNytt, openKort, visaKarta, get lista() { return lista; } };
+  const sparaUppdrag = (row, tyst) => sparaRad(row, 'upsert', tyst);
+
+  return { setup, setUser, load, render, openNytt, openKort, visaKarta, sparaUppdrag, get lista() { return lista; } };
 })();

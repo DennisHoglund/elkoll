@@ -60,7 +60,7 @@ test.describe('Teamet', () => {
     await page.locator('.member').filter({ hasText: 'Maria' }).locator('button.confirm').click();
     await expect(page.locator('.member')).toHaveCount(2);
     expect(api.db.elkoll_uppdrag.find((u) => u.id === 'u3').tilldelad).toBeNull();
-    await page.getByRole('link', { name: 'Uppdrag' }).click();
+    await page.getByRole('link', { name: 'Uppdrag', exact: true }).click();
     await page.getByRole('button', { name: 'Alla' }).click();
     await expect(page.locator('.job').filter({ hasText: 'Felsöka jordfel' })).toContainText('Otilldelad');
   });

@@ -8,7 +8,7 @@
 | **Prioritet** | Hög |
 | **Typ** | 🤖 Automatiserad |
 | **Krav** | [SPEC.md](../../SPEC.md) |
-| **Playwright** | [`tests/tid.spec.js`](../../tests/tid.spec.js#L29) – *starta tid på nytt uppdrag stoppar den förra* |
+| **Playwright** | [`tests/tid.spec.js`](../../tests/tid.spec.js#L31) – *starta tid på nytt uppdrag stoppar den förra* |
 
 ## Förutsättningar
 

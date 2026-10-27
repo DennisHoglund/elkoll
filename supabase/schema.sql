@@ -52,6 +52,10 @@ create table if not exists public.elkoll_uppdrag (
   updated_at  timestamptz not null default now()
 );
 
+-- Fakturering: debiteras = false för garanti/internt, fakturerad_at sätts när ägaren markerat uppdraget fakturerat
+alter table public.elkoll_uppdrag add column if not exists debiteras boolean not null default true;
+alter table public.elkoll_uppdrag add column if not exists fakturerad_at timestamptz;
+
 -- Plats på kartan (steg 4). Slås upp från adressen när uppdraget sparas.
 alter table public.elkoll_uppdrag add column if not exists lat double precision;
 alter table public.elkoll_uppdrag add column if not exists lon double precision;

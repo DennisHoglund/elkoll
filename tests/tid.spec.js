@@ -19,7 +19,7 @@ test.describe('Tidrapport', () => {
     await expect(page.locator('[data-pagar-langd]')).toHaveText('42 min');
     await expect(page.locator('.tid-totalt')).toHaveText('Totalt 42 min');
     await bild(page, 'Tid pågår', { hela: false });
-    await page.getByRole('link', { name: 'Uppdrag' }).click();
+    await page.getByRole('link', { name: 'Uppdrag', exact: true }).click();
     await expect(page.locator('.job').filter({ hasText: 'Byta elcentral' })).toContainText('Tid pågår');
     await oppnaKort(page);
     await page.getByRole('button', { name: /Stoppa/ }).click();
@@ -31,7 +31,7 @@ test.describe('Tidrapport', () => {
   test('starta tid på nytt uppdrag stoppar den förra', { annotation: { type: 'testfall', description: 'TC-TID-02' } }, async ({ idag: page, api }) => {
     await oppnaKort(page);
     await page.getByRole('button', { name: 'Starta tid' }).click();
-    await page.getByRole('link', { name: 'Uppdrag' }).click();
+    await page.getByRole('link', { name: 'Uppdrag', exact: true }).click();
     await oppnaKort(page, 'Montera 4 uttag');
     await page.getByRole('button', { name: 'Starta tid' }).click();
     await expect(page.locator('#toast')).toHaveText('Stoppade tiden på Byta elcentral');

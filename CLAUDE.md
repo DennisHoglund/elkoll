@@ -1,6 +1,6 @@
 # Elkoll – instruktioner för AI-assistenter
 
-Läs `SPEC.md` för hela specifikationen. Det här är reglerna som gäller vid varje ändring.
+Läs `SPEC.md` för hela specifikationen och `BACKLOG.md` för det som ska byggas härnäst. Det här är reglerna som gäller vid varje ändring.
 
 ## Projektet
 - PWA för ett litet hantverkarteam (ca 4 personer): uppdrag dikteras, tolkas av AI och visas per dag.

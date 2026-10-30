@@ -4,7 +4,7 @@ Dagens uppdrag för hantverkarteamet. Diktera uppdraget, låt AI fylla i fälten
 
 - **App:** https://dennishoglund.github.io/elkoll/
 - **Testrapport:** https://dennishoglund.github.io/elkoll/rapport/
-- **Specifikation:** [SPEC.md](SPEC.md) · **Testplan:** [testplan/index.md](testplan/index.md)
+- **Specifikation:** [SPEC.md](SPEC.md) · **Backlog:** [BACKLOG.md](BACKLOG.md) · **Testplan:** [testplan/index.md](testplan/index.md)
 
 ## Kom igång (en gång)
 1. **Databas:** Supabase → SQL Editor → New query → klistra in `supabase/schema.sql` → Run.

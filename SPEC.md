@@ -103,5 +103,4 @@ ser dagens uppdrag med allt som behövs på plats (adress, kund, telefon, portko
 - Gemini för tolkning – gratisnivån räcker för ett litet team.
 
 ## 9. Kvar att göra
-- Egenkontroll (checklista per uppdragstyp).
-- Push-notis vid nytt uppdrag.
+Se `BACKLOG.md`: material att köpa, kvittofoto, Claude-tolkning, förberedelser inför PoC, egenkontroll, push-notis.

@@ -35,7 +35,7 @@ hamnar på arbetsordern och fakturan. Ingen av dem har en enkel delad inköpslis
 
 ---
 
-## B2. Kvittofoto på uppdrag (prio 1, hör ihop med B1)
+## B2. Kvittofoto med AI-tolkning (prio 1, hör ihop med B1 och B3)
 
 **Bakgrund.** Enklaste sättet att få inköp till fakturan utan integration: fota kvittot/följesedeln.
 Så gör många ServiceTitan-användare (en materialrad med totalbelopp + kvittofoto).
@@ -46,6 +46,18 @@ Så gör många ServiceTitan-användare (en materialrad med totalbelopp + kvitto
 3. Fakturaunderlaget (`#faktura`) visar kvitton och summa per uppdrag. Bild öppnas i stort läge.
 4. CSV-exporten får kolumnen `Material kr` (summa kvitton).
 5. Schema: `elkoll_foto.typ` tillåter `kvitto`; ev. kolumner `belopp numeric`, `grossist text`.
+
+**AI-tolkning av kvittot** (Handyfy har detta – vi vill ha det också)
+6. Efter fotot skickas bilden till Edge Function `elkoll-kvitto` (ny, eller nytt läge i `elkoll-tolka`) som
+   anropar Claude Haiku 5.5 med bilden (vision). Samma secret `ANTHROPIC_API_KEY` som B3.
+7. Utdata som JSON: `grossist`, `datum`, `belopp_exkl_moms`, `moms`, `belopp_inkl_moms`, `kvittonr`,
+   och `rader[]` med `artikel`, `artikelnr`, `antal`, `a_pris`, `summa`.
+8. Fälten fylls i förslagsvis – användaren ser och kan rätta innan sparning. Inget sparas automatiskt utan bekräftelse.
+9. Artikelrader kan bockas av mot uppdragets Köpa-rader i B1 ("Köpt av X" sätts automatiskt vid matchning).
+10. Offline eller fel: fotot sparas ändå (kön), tolkningen görs när täckning finns eller fylls i för hand.
+11. Bilden krymps som idag (≤ 250 kB) men med högre upplösning för text (t.ex. 1600 px långsida) innan den skickas.
+12. Ingen kortinformation eller personnummer sparas – bara fälten ovan.
+13. Tester: mocka `elkoll-kvitto` i `tests/mock.js` (lyckad tolkning, felaktig bild, timeout).
 
 ---
 
